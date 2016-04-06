@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="nizhogor.com.flashalarm.AlarmDetailsActivity">
+
+    <item
+        android:id="@+id/save_alarm"
+        android:title="Save"
+        android:orderInCategory="0"
+        app:showAsAction="always"
+        android:icon="@drawable/glyphicons_443_floppy_disk"/>
+    <item
+        android:id="@+id/additional_options"
+        android:title="Addition options"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/rate"
+        android:title="Rate app"
+        android:orderInCategory="2"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/report"
+        android:title="Report bugs"
+        android:orderInCategory="3"
+        app:showAsAction="never" />
+</menu>
