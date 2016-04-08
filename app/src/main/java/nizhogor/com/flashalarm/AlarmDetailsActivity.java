@@ -355,8 +355,6 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         return super.onOptionsItemSelected(item);
     }
 
-
-
     public void startDialogFragment(){
         SettingsDialogFragment dialogFragment = SettingsDialogFragment.newInstance(alarmDetails);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -410,34 +408,51 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
 
     @Override
     public void onBackPressed() {
-        if(alarmDetails.alarmTone == null){
-            LayoutInflater inflater = getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast_layout,
-                    (ViewGroup) findViewById(R.id.toast_layout_root));
+        updateModelFromLayout();
+        String timeUntilAlarm = AlarmManagerHelper.getTimeUntilAlarm(alarmDetails);
 
-            TextView text = (TextView) layout.findViewById(R.id.text);
-            text.setText(R.string.no_alarm_tone_toast);
-
-            Toast toast = new Toast(getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM, 0, 0);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setView(layout);
-            toast.show();
+        String message = "";
+        if (timeUntilAlarm.isEmpty()) {
+            message = "No active days are set";
+        } else {
+            if(alarmDetails.alarmTone == null) {
+                message = "Alarm melody is not set";
+                alarmDetails.volume_rising = false;
+            }
         }
+
+        if (message.isEmpty()) {
+            message = timeUntilAlarm;
+        }
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout,
+                (ViewGroup) findViewById(R.id.toast_layout_root));
+
+        TextView text = (TextView) layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+
 
         saveAlarm();
         super.onBackPressed();
     }
 
     private void saveAlarm() {
-        updateModelFromLayout();
         AlarmManagerHelper.cancelAlarms(this);
         if (alarmDetails.id < 0) {
             dbHelper.createAlarm(alarmDetails);
         } else {
             dbHelper.updateAlarm(alarmDetails);
         }
-        AlarmManagerHelper.setAlarms(this);
+        AlarmManagerHelper.setAlarms(this, true); // the only place where we should ignore weekly if it's for passed week
+        // just set next available day regardless if it has passed. add 1 parameter
+        // also once alarm played and it's not weekly, turn alarm off, so user doesn't get confused
         setResult(RESULT_OK);
     }
 

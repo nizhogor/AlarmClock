@@ -80,7 +80,7 @@ public class AlarmListActivity extends ListActivity {
         model.isEnabled = isEnabled;
         dbHelper.updateAlarm(model);
 
-        AlarmManagerHelper.setAlarms(this);
+        AlarmManagerHelper.setAlarms(this, true);
     }
 
     public void deleteAlarm(long id) {

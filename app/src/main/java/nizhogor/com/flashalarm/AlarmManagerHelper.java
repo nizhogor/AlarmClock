@@ -26,10 +26,10 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        setAlarms(context);
+        setAlarms(context, false);
     }
 
-    public static void setAlarms(Context context) {
+    public static void setAlarms(Context context, boolean ignoreWeekly) {
         cancelAlarms(context);
 
         AlarmDBHelper dbHelper = new AlarmDBHelper(context);
@@ -68,7 +68,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                     //Else check if it's earlier in the week
                     if (!alarmSet) {
                         for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; ++dayOfWeek) {
-                            if (alarm.getRepeatingDay(dayOfWeek - 1) && dayOfWeek <= nowDay && alarm.repeatWeekly) {
+                            if (alarm.getRepeatingDay(dayOfWeek - 1) && dayOfWeek <= nowDay && (ignoreWeekly || alarm.repeatWeekly)) {
                                 calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
                                 calendar.add(Calendar.WEEK_OF_YEAR, 1);
 
@@ -77,6 +77,10 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                                 break;
                             }
                         }
+                    }
+
+                    if (!alarmSet) {
+                        ((AlarmListActivity) context).setAlarmEnabled(alarm.id, false);
                     }
                 }
             }
@@ -125,5 +129,105 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         intent.putExtra(VIBRATE_PATTERN, model.vibrate_pattern);
 
         return PendingIntent.getService(context, (int) model.id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public static String getTimeUntilAlarm(AlarmModel alarm) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, alarm.timeHour);
+        calendar.set(Calendar.MINUTE, alarm.timeMinute);
+        calendar.set(Calendar.SECOND, 00);
+
+        //Find next time to set
+        final int nowDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        final int nowHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        final int nowMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        boolean alarmSet = false;
+
+        //First check if it's later in the week
+        for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; ++dayOfWeek) {
+            if (alarm.getRepeatingDay(dayOfWeek - 1) && dayOfWeek >= nowDay &&
+                    !(dayOfWeek == nowDay && alarm.timeHour < nowHour) &&
+                    !(dayOfWeek == nowDay && alarm.timeHour == nowHour && alarm.timeMinute <= nowMinute)) {
+                calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+                alarmSet = true;
+                break;
+            }
+        }
+
+        //Else check if it's earlier in the week
+        if (!alarmSet) {
+            for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; ++dayOfWeek) {
+                if (alarm.getRepeatingDay(dayOfWeek - 1) && dayOfWeek <= nowDay) {
+                    calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                    alarmSet = true;
+                    break;
+                }
+            }
+        }
+
+        if (!alarmSet) {
+            return "";
+        }
+
+        long difference = calendar.getTimeInMillis() - System.currentTimeMillis();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long inDays = difference / daysInMilli;
+        difference = difference % daysInMilli;
+
+        long inHours = difference / hoursInMilli;
+        difference = difference % hoursInMilli;
+
+        long inMinutes = difference / minutesInMilli;
+        difference = difference % minutesInMilli;
+
+        String intro ="Alarm is set for ";
+        String alert = intro;
+        if (inDays > 0) {
+            alert += inDays + " day";
+            if (inDays > 1)
+                alert +="s";
+            if (inMinutes > 0 && inHours > 0) {
+                alert += ", " + inHours + " hour" + ((inHours > 1) ? "s": "") + ", and " +
+                        inMinutes + " minute" + ((inMinutes > 1) ? "s": "");
+
+            } else if (inMinutes == 0 && inHours == 0 ) {
+                // do nothing
+            } else {
+                alert += " and " + ((inMinutes == 0) ? inMinutes: inHours);
+                if (inMinutes !=0)
+                    alert += "minute";
+                else
+                    alert += "hour";
+                if (inMinutes + inHours > 1) {
+                    alert += "s";
+                }
+            }
+        } else {
+            if (inMinutes > 0 && inHours > 0) {
+                alert += inHours + " hour" + ((inHours > 1) ? "s": "") + " and " +
+                        inMinutes + " minute" + ((inMinutes > 1) ? "s": "");
+            } else if (inMinutes == 0 && inHours == 0 ) {
+                // do nothing
+            } else {
+                alert += ((inMinutes == 0) ? inMinutes: inHours);
+                if (inMinutes !=0)
+                    alert += "minute";
+                else
+                    alert += "hour";
+                if (inMinutes + inHours > 1) {
+                    alert += "s";
+                }
+            }
+        }
+        if (alert.equals(intro))
+            return "";
+        alert += " from now";
+        return alert;
     }
 }
