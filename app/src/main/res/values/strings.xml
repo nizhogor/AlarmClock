@@ -1,22 +1,19 @@
 <resources>
     <string name="app_name">FlashAlarm</string>
     <string name="title_activity_alarm_list"></string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_alarm_details">AlarmDetailsActivity</string>
-        <string name="details_alarm_name">Alarm Name</string>
-        <string name="details_repeat_weekly">Repeat Weekly</string>
-        <string name="details_sunday">Sunday</string>
-        <string name="details_monday">Monday</string>
-        <string name="details_tuesday">Tuesday</string>
-        <string name="details_wednesday">Wednesday</string>
-        <string name="details_thursday">Thursday</string>
-        <string name="details_friday">Friday</string>
-        <string name="details_saturday">Saturday</string>
-        <string name="details_alarm_tone">Alarm Tone</string>
-        <string name="details_alarm_tone_default">Select an alarm tone</string>
-
+    <string name="details_alarm_name">Alarm Name</string>
+    <string name="details_repeat_weekly">Repeat Weekly</string>
+    <string name="details_sunday">Sunday</string>
+    <string name="details_monday">Monday</string>
+    <string name="details_tuesday">Tuesday</string>
+    <string name="details_wednesday">Wednesday</string>
+    <string name="details_thursday">Thursday</string>
+    <string name="details_friday">Friday</string>
+    <string name="details_saturday">Saturday</string>
+    <string name="details_alarm_tone">Alarm Tone</string>
+    <string name="details_alarm_tone_default">Select an alarm tone</string>
     <string name="title_activity_alarm_screen">Set alarm</string>
     <string name="volume_rising">Rising volume</string>
     <string name="flash">Flashlight</string>
@@ -26,11 +23,13 @@
         <item>Ringtones</item>
     </string-array>
     <string name="no_alarm_tone_toast">Alarm tone wasn\'t specified</string>
-    <string name="pattern_hint">Accepted letters for a pattern:\n(s)hort = 0.5s\n(m)edium = 1s\n(l)ong = 1.5s\n(e)xtra long = 2s</string>
+    <string name="pattern_hint">Alarm pattern may include following characters:\n(s)hort = 0.5s\n(m)edium = 1s\n(l)ong = 1.5s\n(e)xtra long = 2s\n(c)onstant = constantly on</string>
+    <string name="pattern_remove_constant">To set custom pattern remove (c)onstant character first.</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="digital_picker">Digital time picker</string>
     <string name="bug_subject">Alarm bug</string>
     <string name="bug_text">The following issue appeared after I took these steps:</string>
     <string name="bug_adress">nizhogor@gmail.com</string>
     <string name="bug_toast_body">Please email to</string>
+    <string name="fragment_custom_label">Custom alarm patterns</string>
 </resources>

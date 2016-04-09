@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/alarm_screen_date"
@@ -10,30 +10,30 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
         android:text="Wednesday, January 1, 2015"
-        android:textSize="26dp"
-        android:textColor="@color/bpWhite"/>
+        android:textColor="@color/bpWhite"
+        android:textSize="26dp" />
 
     <TextView
         android:id="@+id/alarm_screen_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:text="00 : 00"
-        android:textSize="54dp"
         android:layout_below="@+id/alarm_screen_date"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/bpWhite"/>
+        android:layout_marginTop="54dp"
+        android:text="00 : 00"
+        android:textColor="@color/bpWhite"
+        android:textSize="54dp" />
 
     <TextView
         android:id="@+id/alarm_screen_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
-        android:text="Alarm name"
         android:layout_below="@+id/alarm_screen_time"
         android:layout_centerHorizontal="true"
-        android:textSize="24dp"
-        android:textColor="@color/bpWhite"/>
+        android:layout_marginTop="55dp"
+        android:text="Alarm name"
+        android:textColor="@color/bpWhite"
+        android:textSize="24dp" />
 
     <Button
         android:id="@+id/alarm_screen_button"
@@ -43,7 +43,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="106dp"
         android:text="Dismiss"
-        android:textSize="62dp"
-        android:textColor="@color/bpWhite"/>
+        android:textColor="@color/bpWhite"
+        android:textSize="62dp" />
 
 </RelativeLayout>

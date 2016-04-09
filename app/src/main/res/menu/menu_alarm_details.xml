@@ -4,24 +4,30 @@
     tools:context="nizhogor.com.flashalarm.AlarmDetailsActivity">
 
     <item
-        android:id="@+id/save_alarm"
-        android:title="Save"
+        android:id="@+id/remove_alarm"
+        android:icon="@drawable/remove_alarm"
         android:orderInCategory="0"
-        app:showAsAction="always"
-        android:icon="@drawable/glyphicons_443_floppy_disk"/>
+        android:title="Delete"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/save_alarm"
+        android:icon="@drawable/save_alarm"
+        android:orderInCategory="1"
+        android:title="Save"
+        app:showAsAction="always" />
     <item
         android:id="@+id/additional_options"
+        android:orderInCategory="2"
         android:title="Addition options"
-        android:orderInCategory="1"
         app:showAsAction="never" />
     <item
         android:id="@+id/rate"
+        android:orderInCategory="3"
         android:title="Rate app"
-        android:orderInCategory="2"
         app:showAsAction="never" />
     <item
         android:id="@+id/report"
+        android:orderInCategory="4"
         android:title="Report bugs"
-        android:orderInCategory="3"
         app:showAsAction="never" />
 </menu>

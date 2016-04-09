@@ -2,11 +2,16 @@ package nizhogor.com.flashalarm;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -20,6 +25,7 @@ public class SettingsDialogFragment extends DialogFragment {
     private TextView mVibratePattern;
     private TextView mFlashPattern;
     private TextView mVibrateLabel;
+    private boolean updatingVibratePattern = false;
     private TextView mFlashLabel;
     private CustomToggleButton mDigitalPicker;
     private ImageView mFlashIcon;
@@ -29,15 +35,52 @@ public class SettingsDialogFragment extends DialogFragment {
     private static Activity mActivity;
 
     private InputFilter filter = new InputFilter() {
+        @Override
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
+
             for (int i = start; i < end; i++) {
+
                 if (!isValidLetter(source.charAt(i))) {
-                    showInputInstructionToast();
+                    showInputInstructionToast(R.string.pattern_hint);
                     return "";
                 }
+
             }
+
             return null;
+        }
+    };
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int a, int b, int c) {
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        public void afterTextChanged(Editable s) {
+            if (s.length() != 0) {
+                String str = s.toString();
+
+                if (str.contains("c") && s.length() > 1) {
+                    if (updatingVibratePattern) {
+                        mVibratePattern.setText("");
+                        mVibratePattern.append("c");
+                    } else {
+                        mFlashPattern.setText("");
+                        mFlashPattern.append("c");
+                    }
+                    if (s.length() == 2) {
+                        showInputInstructionToast(R.string.pattern_remove_constant);
+                    }
+                }
+            }
         }
     };
 
@@ -47,22 +90,23 @@ public class SettingsDialogFragment extends DialogFragment {
             case 'm':
             case 'l':
             case 'e':
+            case 'c':
                 return true;
             default:
                 return false;
         }
     }
 
-    private void showInputInstructionToast() {
+    private void showInputInstructionToast(int toastText) {
         LayoutInflater inflater = mActivity.getLayoutInflater();
 
         View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) mActivity.findViewById(R.id.toast_layout_root));
 
         TextView text = (TextView) layout.findViewById(R.id.text);
-        text.setText(R.string.pattern_hint);
+        text.setText(toastText);
 
         Toast toast = new Toast(mActivity);
-        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setDuration(Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM, 0, 0);
         toast.setView(layout);
         toast.show();
@@ -105,17 +149,34 @@ public class SettingsDialogFragment extends DialogFragment {
         mVibrateIcon = (ImageView) v.findViewById(R.id.vibrate_icon);
 
         mFlashPattern.setFilters(new InputFilter[]{filter});
+        mFlashPattern.addTextChangedListener(textWatcher);
         mVibratePattern.setFilters(new InputFilter[]{filter});
+        mVibratePattern.addTextChangedListener(textWatcher);
+
+        mFlashPattern.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent m) {
+                updatingVibratePattern = false;
+                return false;
+            }
+        });
+        mVibratePattern.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent m) {
+                updatingVibratePattern = true;
+                return false;
+            }
+        });
 
         mFlashIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mHardwareManager.isFlashing()) {
                     mHardwareManager.stopFlash();
-                    mFlashIcon.setImageResource(R.drawable.ic_flash_on_white_24dp);
+                    mFlashIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                 } else {
                     mHardwareManager.startFlash(mFlashPattern.getText().toString());
-                    mFlashIcon.setImageResource(R.drawable.ic_action_ic_flash_on_green_24dp);
+                    mFlashIcon.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                 }
             }
         });
@@ -125,10 +186,10 @@ public class SettingsDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 if (mHardwareManager.isVibrating()) {
                     mHardwareManager.stopVibrate();
-                    mVibrateIcon.setImageResource(R.drawable.ic_vibration_white_24dp);
+                    mVibrateIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
                 } else {
                     mHardwareManager.startVibrate(mVibratePattern.getText().toString());
-                    mVibrateIcon.setImageResource(R.drawable.vibrate_green);
+                    mVibrateIcon.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
                 }
             }
         });
@@ -136,13 +197,13 @@ public class SettingsDialogFragment extends DialogFragment {
         mFlashLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showInputInstructionToast();
+                showInputInstructionToast(R.string.pattern_hint);
             }
         });
         mVibrateLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showInputInstructionToast();
+                showInputInstructionToast(R.string.pattern_hint);
             }
         });
         mDigitalPicker = (CustomToggleButton) v.findViewById(R.id.digital_picker);

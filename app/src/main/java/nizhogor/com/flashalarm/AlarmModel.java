@@ -27,8 +27,8 @@ public class AlarmModel {
     public int brightness = 0;
     public boolean vibrate;
 
-    public String flash_pattern="ssle";
-    public String vibrate_pattern="ssle";
+    public String flash_pattern = "ssle";
+    public String vibrate_pattern = "ssle";
     public Boolean dark_theme;
     public boolean digital_picker = true;
     public boolean snooze;
@@ -47,18 +47,22 @@ public class AlarmModel {
         return repeatingDays[dayOfWeek];
     }
 
-    public void setVolume(int volume){ this.volume = volume; }
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
 
     public float getVolumeFloat() {
-        float log1=(float)(Math.log(100-volume)/Math.log(100));
-        return 1-log1;
+        float log1 = (float) (Math.log(100 - volume) / Math.log(100));
+        return 1 - log1;
     }
 
     public static float getVolumeFloat(int currentVolume) {
-        float log1=(float)(Math.log(100-currentVolume)/Math.log(100));
-        return 1-log1;
+        float log1 = (float) (Math.log(100 - currentVolume) / Math.log(100));
+        return 1 - log1;
     }
 
-    public int getVolumeInt() { return this.volume; }
+    public int getVolumeInt() {
+        return this.volume;
+    }
 
 }

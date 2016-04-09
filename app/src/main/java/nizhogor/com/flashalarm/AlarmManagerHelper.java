@@ -34,8 +34,8 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
         AlarmDBHelper dbHelper = new AlarmDBHelper(context);
 
-        List<AlarmModel> alarms =  dbHelper.getAlarms();
-        if ( alarms != null ) {
+        List<AlarmModel> alarms = dbHelper.getAlarms();
+        if (alarms != null) {
             for (AlarmModel alarm : alarms) {
                 if (alarm.isEnabled) {
 
@@ -78,10 +78,11 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                             }
                         }
                     }
-
+                    /*
                     if (!alarmSet) {
                         ((AlarmListActivity) context).setAlarmEnabled(alarm.id, false);
                     }
+                    */
                 }
             }
         }
@@ -100,7 +101,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     public static void cancelAlarms(Context context) {
         AlarmDBHelper dbHelper = new AlarmDBHelper(context);
 
-        List<AlarmModel> alarms =  dbHelper.getAlarms();
+        List<AlarmModel> alarms = dbHelper.getAlarms();
 
         if (alarms != null) {
             for (AlarmModel alarm : alarms) {
@@ -186,21 +187,21 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         long inMinutes = difference / minutesInMilli;
         difference = difference % minutesInMilli;
 
-        String intro ="Alarm is set for ";
+        String intro = "Alarm is set for ";
         String alert = intro;
         if (inDays > 0) {
             alert += inDays + " day";
             if (inDays > 1)
-                alert +="s";
+                alert += "s";
             if (inMinutes > 0 && inHours > 0) {
-                alert += ", " + inHours + " hour" + ((inHours > 1) ? "s": "") + ", and " +
-                        inMinutes + " minute" + ((inMinutes > 1) ? "s": "");
+                alert += ", " + inHours + " hour" + ((inHours > 1) ? "s" : "") + ", and " +
+                        inMinutes + " minute" + ((inMinutes > 1) ? "s" : "");
 
-            } else if (inMinutes == 0 && inHours == 0 ) {
+            } else if (inMinutes == 0 && inHours == 0) {
                 // do nothing
             } else {
-                alert += " and " + ((inMinutes == 0) ? inMinutes: inHours);
-                if (inMinutes !=0)
+                alert += " and " + ((inMinutes == 0) ? inMinutes : inHours);
+                if (inMinutes != 0)
                     alert += "minute";
                 else
                     alert += "hour";
@@ -210,13 +211,13 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             }
         } else {
             if (inMinutes > 0 && inHours > 0) {
-                alert += inHours + " hour" + ((inHours > 1) ? "s": "") + " and " +
-                        inMinutes + " minute" + ((inMinutes > 1) ? "s": "");
-            } else if (inMinutes == 0 && inHours == 0 ) {
+                alert += inHours + " hour" + ((inHours > 1) ? "s" : "") + " and " +
+                        inMinutes + " minute" + ((inMinutes > 1) ? "s" : "");
+            } else if (inMinutes == 0 && inHours == 0) {
                 // do nothing
             } else {
-                alert += ((inMinutes == 0) ? inMinutes: inHours);
-                if (inMinutes !=0)
+                alert += ((inMinutes == 0) ? inMinutes : inHours);
+                if (inMinutes != 0)
                     alert += "minute";
                 else
                     alert += "hour";

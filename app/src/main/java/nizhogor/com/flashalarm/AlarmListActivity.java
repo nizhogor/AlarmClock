@@ -2,10 +2,15 @@ package nizhogor.com.flashalarm;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +21,14 @@ public class AlarmListActivity extends ListActivity {
     private AlarmDBHelper dbHelper = new AlarmDBHelper(this);
     private Context mContext;
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateAlarmList();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //requestWindowFeature(Window.FEATURE_ACTION_BAR);
@@ -25,13 +38,19 @@ public class AlarmListActivity extends ListActivity {
         mAdapter = new AlarmListAdapter(this, dbHelper.getAlarms());
         setListAdapter(mAdapter);
         getActionBar().setTitle("Active alarms");
+        registerReceiver(mMessageReceiver,
+                new IntentFilter("android.intent.action.TIME_SET"));
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu){
-        MenuItem save = menu.findItem(R.id.action_add_new_alarm);
-        save.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        save.setIcon(R.drawable.action_bar_add);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem add = menu.findItem(R.id.action_add_new_alarm);
+        add.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        Drawable dr = getResources().getDrawable(R.drawable.add_alarm);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(),
+                Bitmap.createScaledBitmap(bitmap, 95, 95, true));
+        add.setIcon(d);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -60,15 +79,18 @@ public class AlarmListActivity extends ListActivity {
         startActivityForResult(intent, 0);
     }
 
+    public void updateAlarmList() {
+        mAdapter.setAlarms(dbHelper.getAlarms());
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            mAdapter.setAlarms(dbHelper.getAlarms());
-            mAdapter.notifyDataSetChanged();
-        }
-        else{
+            updateAlarmList();
+        } else {
             System.out.println("------>AlarmListActivity startAlarmDetailsActivity() wasn't successful");
         }
     }
@@ -94,7 +116,7 @@ public class AlarmListActivity extends ListActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Cancel Alarms
-                       // AlarmManagerHelper.cancelAlarms(mContext);
+                        // AlarmManagerHelper.cancelAlarms(mContext);
                         //Delete alarm from DB by id
                         dbHelper.deleteAlarm(alarmId);
                         //Refresh the list of the alarms in the adaptor
@@ -102,7 +124,7 @@ public class AlarmListActivity extends ListActivity {
                         //Notify the adapter the data has changed
                         mAdapter.notifyDataSetChanged();
                         //Set the alarms
-                       // AlarmManagerHelper.setAlarms(mContext);
+                        // AlarmManagerHelper.setAlarms(mContext);
                     }
                 }).show();
     }

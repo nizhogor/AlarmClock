@@ -1,4 +1,5 @@
 package nizhogor.com.flashalarm;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nizhogor.com.flashalarm.AlarmContract.Alarm;
+
 /**
  * Created by Mix on 6/16/2015.
  */
@@ -42,7 +44,7 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
             Alarm.COLUMN_NAME_SNOOZE + " BOOLEAN" +
             ");";
     public static final String COLUMN_NAME_ALARM_ENABLED = "enabled";
-        private static final String SQL_DELETE_ALARM =
+    private static final String SQL_DELETE_ALARM =
             "DROP TABLE IF EXISTS " + Alarm.TABLE_NAME;
 
     public AlarmDBHelper(Context context) {
@@ -78,9 +80,9 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
 
         model.flash_pattern = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_FLASH_PATTERN));
         model.vibrate_pattern = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_VIBRATE_PATTERN));
-        model.dark_theme = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_DARK_THEME)) == 0 ? false: true;
-        model.digital_picker = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_DIGITAL_PICKER)) == 0 ? false: true;
-        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE)) == 0 ? false: true;
+        model.dark_theme = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_DARK_THEME)) == 0 ? false : true;
+        model.digital_picker = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_DIGITAL_PICKER)) == 0 ? false : true;
+        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE)) == 0 ? false : true;
 
         String[] repeatingDays = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_REPEAT_DAYS)).split(",");
         for (int i = 0; i < repeatingDays.length; ++i) {
@@ -127,7 +129,7 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
 
     public long updateAlarm(AlarmModel model) {
         ContentValues values = populateContent(model);
-        return getWritableDatabase().update(Alarm.TABLE_NAME, values, Alarm._ID + " = ?", new String[] { String.valueOf(model.id) });
+        return getWritableDatabase().update(Alarm.TABLE_NAME, values, Alarm._ID + " = ?", new String[]{String.valueOf(model.id)});
     }
 
     public AlarmModel getAlarm(long id) {
@@ -165,6 +167,6 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
     }
 
     public int deleteAlarm(long id) {
-        return getWritableDatabase().delete(Alarm.TABLE_NAME, Alarm._ID + " = ?", new String[] { String.valueOf(id) });
+        return getWritableDatabase().delete(Alarm.TABLE_NAME, Alarm._ID + " = ?", new String[]{String.valueOf(id)});
     }
 }

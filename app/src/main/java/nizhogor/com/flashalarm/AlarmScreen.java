@@ -29,7 +29,7 @@ public class AlarmScreen extends Activity {
     private Vibrator mVibrator;
     private float startVolume = (float) 0.1f;
     private static final int WAKELOCK_TIMEOUT = 60 * 1000;
-    private HardwareManager  hardwareManager;
+    private HardwareManager hardwareManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,20 +58,20 @@ public class AlarmScreen extends Activity {
         tvName.setText(name);
 
         Calendar c = Calendar.getInstance();
-        long lDate =c.getTimeInMillis();
+        long lDate = c.getTimeInMillis();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d, y");
         String strDate = dateFormat.format(lDate);
         TextView alarmDate = (TextView) findViewById(R.id.alarm_screen_date);
         alarmDate.setText(strDate);
 
         TextView tvTime = (TextView) findViewById(R.id.alarm_screen_time);
-        if(DateFormat.is24HourFormat(this))
+        if (DateFormat.is24HourFormat(this))
             tvTime.setText(String.format("%02d : %02d", timeHour, timeMinute));
-        else{
+        else {
             String ampm = "";
             if (timeHour >= 12) {
                 ampm = "pm";
-                if(timeHour >12)
+                if (timeHour > 12)
                     timeHour = timeHour - 12;
             }
             tvTime.setText(String.format("%02d : %02d %s", timeHour, timeMinute, ampm));
@@ -97,10 +97,10 @@ public class AlarmScreen extends Activity {
 
         new Handler().postDelayed(releaseWakelock, WAKELOCK_TIMEOUT);
 
-        if (vibrate){
+        if (vibrate) {
             hardwareManager.startVibrate(vibratePattern);
         }
-        if (flash){
+        if (flash) {
             hardwareManager.startFlash(flashPattern);
         }
         if (tone != null && !tone.equals("")) {
@@ -170,7 +170,6 @@ public class AlarmScreen extends Activity {
 
         super.onBackPressed();
     }
-
 
 
 }

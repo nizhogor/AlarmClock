@@ -70,7 +70,7 @@ public class CustomToggleButton extends FrameLayout {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 setColor();
-                if (label.getText().equals("Rising volume")){
+                if (label.getText().equals("Rising volume")) {
                     ((AlarmDetailsActivity) mContext).updateSeekBar();
                 }
             }
@@ -114,18 +114,17 @@ public class CustomToggleButton extends FrameLayout {
             //button.setChecked(a.getBoolean(2, false));
             setChecked(a.getBoolean(2, false));
         } finally {
-           a.recycle();
+            a.recycle();
         }
 
 
     }
 
-    public void setColor(){
+    public void setColor() {
         if (button.isChecked()) {
             label.setTextColor(getResources().getColor(R.color.bpBlue));
             mLayout.setBackgroundColor(getResources().getColor(R.color.black_overlay));
-        }
-        else {
+        } else {
             label.setTextColor(Color.LTGRAY);
             mLayout.setBackgroundColor(Color.BLACK);
 
@@ -135,11 +134,11 @@ public class CustomToggleButton extends FrameLayout {
     public void setText(String text) {
         label.setText(text);
     }
+
     public void setChecked(boolean isChecked) {
         button.setChecked(isChecked);
         setColor();
     }
-
 
 
     public boolean isChecked() {

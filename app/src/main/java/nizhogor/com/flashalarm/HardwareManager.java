@@ -22,6 +22,8 @@ public class HardwareManager {
     private int startVolume = 1;
     Vibrator mVibrator;
     Camera mCamera;
+    private static final String ON = Camera.Parameters.FLASH_MODE_TORCH;
+    private static final String OFF = Camera.Parameters.FLASH_MODE_OFF;
 
     private static String mPattern;
     private Timer mTimer;
@@ -30,26 +32,26 @@ public class HardwareManager {
     private boolean mIsVibrating = false;
     private boolean mIsFlashing = false;
 
-    public HardwareManager(Context context){
+    public HardwareManager(Context context) {
         mContext = context;
 
     }
 
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         if (mPlayer != null && mPlayer.isPlaying())
             return true;
         else
             return false;
     }
 
-    public void stopPlaying(){
+    public void stopPlaying() {
         if (isPlaying())
             mPlayer.stop();
 
     }
 
-    public void PlayAlarm( Uri alarmTone, float volume) {
-        if (mPlayer != null && mPlayer.isPlaying()){
+    public void PlayAlarm(Uri alarmTone, float volume) {
+        if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
             mPlayer.release();
         }
@@ -72,20 +74,19 @@ public class HardwareManager {
         //AudioManager audioManager = (AudioManager) mContext.getSystemService(mContext.AUDIO_SERVICE);
         //audioManager.setStreamVolume (AudioManager.STREAM_ALARM, 1,0);
 
-        TimerTask task = new TimerTask(){
+        TimerTask task = new TimerTask() {
             @Override
-            public void run(){
+            public void run() {
                 //AudioManager audioManager = (AudioManager) mContext.getSystemService(mContext.AUDIO_SERVICE);
                 //int currentAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
                 //int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
 
-                if(startVolume < 100) {
+                if (startVolume < 100) {
                     startVolume += 1;
                     float volume = AlarmModel.getVolumeFloat(startVolume);
                     //audioManager.setStreamVolume (AudioManager.STREAM_ALARM, currentAlarmVolume+3,0);
                     mPlayer.setVolume(volume, volume);
-                }
-                else
+                } else
                     this.cancel();
             }
         };
@@ -93,7 +94,7 @@ public class HardwareManager {
         timer.schedule(task, 0, 350);
     }
 
-    private long getLength(char c){
+    private long getLength(char c) {
         switch (c) {
             case 's':
                 return 500L;
@@ -103,19 +104,21 @@ public class HardwareManager {
                 return 1500L;
             case 'e':
                 return 2000L;
+            case 'c':
+                return -1L;
             default:
                 return 0L;
         }
     }
 
-    private long[] getPattern(String strPattern){
+    private long[] getPattern(String strPattern) {
         //500 s 1000 m 1500 l 2000 e
         int patternLength = strPattern.length();
         long[] pattern = new long[patternLength * 2 + 1];
         //first value is how long to wait before starts, than alternates
         pattern[0] = 2500L;
 
-        for (int i = 0; i < patternLength; i++){
+        for (int i = 0; i < patternLength; i++) {
             long patternValue = getLength(strPattern.charAt(i));
             pattern[2 * (i + 1) - 1] = patternValue;
             pattern[2 * (i + 1)] = patternValue;
@@ -123,32 +126,45 @@ public class HardwareManager {
         return pattern;
     }
 
-    public void startVibrate(String strPattern){
+    public void startVibrate(String strPattern) {
         mIsVibrating = true;
         long[] pattern = getPattern(strPattern);
+
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(pattern, 0);
+        if (pattern[1] == -1L) {
+            mVibrator.vibrate(5 * 60 * 1000);
+        } else {
+            mVibrator.vibrate(pattern, 0);
+        }
     }
 
-    public void stopVibrate(){
+    public void stopVibrate() {
         if (mVibrator != null) {
             mVibrator.cancel();
         }
         mIsVibrating = false;
     }
 
-    public void startFlash(String strPattern){
+    public void startFlash(String strPattern) {
         long[] pattern = getPattern(strPattern);
         mIsFlashing = true;
-        mTimer = new Timer();
-        FlashTimerTask flashTimerTask = new FlashTimerTask(pattern, 0);
         if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             mCamera = Camera.open();
         }
+        if (pattern[1] == -1L) {
+            Camera.Parameters p = mCamera.getParameters();
+            p.setFlashMode(ON);
+            mCamera.setParameters(p);
+            mCamera.startPreview();
+            return;
+        }
+        mTimer = new Timer();
+        FlashTimerTask flashTimerTask = new FlashTimerTask(pattern, 0);
+
         mTimer.schedule(flashTimerTask, 0);
     }
 
-    public void stopFlash(){
+    public void stopFlash() {
         mIsFlashing = false;
         if (mTimer != null) {
             mTimer.cancel();
@@ -164,8 +180,6 @@ public class HardwareManager {
         private Context mAppContext = null;
 
         private int mIndex = 0;
-        private static final String ON = Camera.Parameters.FLASH_MODE_TORCH;
-        private static final String OFF = Camera.Parameters.FLASH_MODE_OFF;
 
         protected FlashTimerTask(long[] pattern, int index) {
             super();
@@ -194,5 +208,8 @@ public class HardwareManager {
     public boolean isFlashing() {
         return mIsFlashing;
     }
-    public boolean isVibrating() { return mIsVibrating; }
+
+    public boolean isVibrating() {
+        return mIsVibrating;
+    }
 }

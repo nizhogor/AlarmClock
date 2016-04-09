@@ -1,6 +1,7 @@
 package nizhogor.com.flashalarm;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.format.DateFormat;
@@ -14,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -68,43 +70,78 @@ public class AlarmListAdapter extends BaseAdapter {
         AlarmModel model = (AlarmModel) getItem(position);
         TextView txtTime = (TextView) view.findViewById(R.id.alarm_item_time);
         TextView dayPeriod = (TextView) view.findViewById(R.id.time_period);
+        TextView txtMonday = (TextView) view.findViewById(R.id.alarm_item_monday);
+        TextView txtTuesday = (TextView) view.findViewById(R.id.alarm_item_tuesday);
+        TextView txtWednesday = (TextView) view.findViewById(R.id.alarm_item_wednesday);
+        TextView txtThursday = (TextView) view.findViewById(R.id.alarm_item_thursday);
+        TextView txtFriday = (TextView) view.findViewById(R.id.alarm_item_friday);
+        TextView txtSaturday = (TextView) view.findViewById(R.id.alarm_item_saturday);
+        TextView txtSunday = (TextView) view.findViewById(R.id.alarm_item_sunday);
 
-        if(DateFormat.is24HourFormat(mContext)){
+        TextView txtName = (TextView) view.findViewById(R.id.alarm_item_name);
+        txtName.setText(model.name);
+
+        updateText(txtSunday, model.getRepeatingDay(AlarmModel.SUNDAY));
+        updateText(txtMonday, model.getRepeatingDay(AlarmModel.MONDAY));
+        updateText(txtTuesday, model.getRepeatingDay(AlarmModel.TUESDAY));
+        updateText(txtWednesday, model.getRepeatingDay(AlarmModel.WEDNESDAY));
+        updateText(txtThursday, model.getRepeatingDay(AlarmModel.THURSDAY));
+        updateText(txtFriday, model.getRepeatingDay(AlarmModel.FRIDAY));
+        updateText(txtSaturday, model.getRepeatingDay(AlarmModel.SATURDAY));
+
+        updateImage((ImageView) view.findViewById(R.id.flash), model.flash, R.drawable.ic_flash_on_white_24dp);
+        updateImage((ImageView) view.findViewById(R.id.vibrate), model.vibrate, R.drawable.ic_vibration_white_24dp);
+        updateImage((ImageView) view.findViewById(R.id.rising), model.volume_rising, R.drawable.ic_filter_list_white_24dp);
+
+        Resources resources = mContext.getResources();
+        ImageView vibrateIcon = (ImageView) view.findViewById(R.id.vibrate);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) vibrateIcon.getLayoutParams();
+
+        if (DateFormat.is24HourFormat(mContext)) {
             txtTime.setText(String.format("%02d : %02d", model.timeHour, model.timeMinute));
             txtTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.large_clock_digits));
             dayPeriod.setText("");
-            //txtTime.setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.large_clock_digits));
-        }
-        else{
+
+            txtMonday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtTuesday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtWednesday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtThursday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtFriday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtSaturday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+            txtSunday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
+
+            layoutParams.setMargins(resources.getDimensionPixelSize(R.dimen.vibrate_margin), 0, 0, 0);
+            vibrateIcon.setLayoutParams(layoutParams);
+        } else {
+            view.invalidate();
+
             int hour = model.timeHour;
             String ampm = "am";
             if (model.timeHour >= 12) {
                 ampm = "pm";
-                if (model.timeHour >12)
+                if (model.timeHour > 12)
                     hour = model.timeHour - 12;
                 if (hour == 0) {
                     hour = 12;
                 }
             }
             txtTime.setText(String.format("%02d : %02d", hour, model.timeMinute));
-            txtTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.medium_clock_digits));
+            txtTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.medium_clock_digits));
             dayPeriod.setText(ampm);
-            dayPeriod.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.time_period));
+            dayPeriod.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.time_period));
+
+            txtMonday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtTuesday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtWednesday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtThursday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtFriday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtSaturday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+            txtSunday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
+
+            layoutParams.setMargins(resources.getDimensionPixelSize(R.dimen.vibrate_margin_with_period), 0, 0, 0);
+            vibrateIcon.setLayoutParams(layoutParams);
         }
-        TextView txtName = (TextView) view.findViewById(R.id.alarm_item_name);
-        txtName.setText(model.name);
 
-        updateText((TextView) view.findViewById(R.id.alarm_item_sunday), model.getRepeatingDay(AlarmModel.SUNDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_monday), model.getRepeatingDay(AlarmModel.MONDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_tuesday), model.getRepeatingDay(AlarmModel.TUESDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_wednesday), model.getRepeatingDay(AlarmModel.WEDNESDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_thursday), model.getRepeatingDay(AlarmModel.THURSDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_friday), model.getRepeatingDay(AlarmModel.FRIDAY));
-        updateText((TextView) view.findViewById(R.id.alarm_item_saturday), model.getRepeatingDay(AlarmModel.SATURDAY));
-
-        updateImage((ImageView) view.findViewById(R.id.flash), model.flash, R.drawable.ic_flash_on_white_24dp);
-        updateImage((ImageView) view.findViewById(R.id.vibrate), model.vibrate, R.drawable.ic_vibration_white_24dp);
-        updateImage((ImageView) view.findViewById(R.id.rising), model.volume_rising, R.drawable.ic_filter_list_white_24dp);
         ToggleButton btnToggle = (ToggleButton) view.findViewById(R.id.alarm_item_toggle);
         btnToggle.setChecked(model.isEnabled);
         btnToggle.setTag(Long.valueOf(model.id));
@@ -145,12 +182,11 @@ public class AlarmListAdapter extends BaseAdapter {
         }
     }
 
-    private void updateImage(ImageView view, boolean isOn, int image){
+    private void updateImage(ImageView view, boolean isOn, int image) {
         view.setImageResource(image);
-        if(isOn) {
+        if (isOn) {
             view.setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
-        }
-        else {
+        } else {
             view.setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
         }
     }

@@ -29,9 +29,6 @@ public final class AlarmContract {
         public static final String COLUMN_NAME_ALARM_DARK_THEME = "dark_theme";
         public static final String COLUMN_NAME_DIGITAL_PICKER = "digital_picker";
         public static final String COLUMN_NAME_SNOOZE = "snooze";
-
-
-
     }
 
 }

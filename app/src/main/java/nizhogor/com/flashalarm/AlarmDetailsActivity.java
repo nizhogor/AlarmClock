@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -115,7 +118,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             chkFriday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.FRIDAY));
             chkSaturday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.SATURDAY));
 
-            if(alarmDetails.alarmTone!=null)
+            if (alarmDetails.alarmTone != null)
                 txtToneSelection.setText(RingtoneManager.getRingtone(this, alarmDetails.alarmTone).getTitle(this));
             updateSeekBar();
             chkVibrate.setChecked(alarmDetails.vibrate);
@@ -138,15 +141,14 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                     DialogFragment newFragment = RadialTimePickerDialog.newInstance(new RadialTimePickerDialog.OnTimeSetListener() {
                                                                                         @Override
                                                                                         public void onTimeSet(RadialTimePickerDialog radialTimePickerDialog, int hr, int min) {
-                                                                                             setAlarmTime(hr, min);
+                                                                                            setAlarmTime(hr, min);
                                                                                         }
                                                                                     },
                             hour,
                             minute,
                             DateFormat.is24HourFormat(mContext));
                     newFragment.show(fm, "radial");
-                }
-                else {
+                } else {
                     // or R.style.BetterPickersDialogFragment.Light
                     TimePickerBuilder builder = new TimePickerBuilder().
                             setFragmentManager(fm).
@@ -157,7 +159,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         });
 
 
-        volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+        volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 alarmDetails.setVolume(seekBar.getProgress());
@@ -167,21 +169,21 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
         });
 
-        playImageView.setOnClickListener(new View.OnClickListener(){
+        playImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 try {
                     if (!hardwareManager.isPlaying()) {
-                       startPlaying();
-                    }
-                    else {
+                        startPlaying();
+                    } else {
                         hardwareManager.stopPlaying();
                         playImageView.setImageResource(R.drawable.play);
                     }
@@ -235,7 +237,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
 
-    private int getHourFromTextView(){
+    private int getHourFromTextView() {
         int adjust = 0;
         //!add 24 hour case
         if (alarmPeriod.getText().toString().toLowerCase().equals("pm"))
@@ -247,7 +249,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         return militaryHour;
     }
 
-    private int getMinuteFromTextView(){
+    private int getMinuteFromTextView() {
         String time = alarmTime.getText().toString();
         return Integer.parseInt(time.substring(3, 5));
     }
@@ -263,14 +265,13 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             } else {
                 alarmPeriod.setText("am");
             }
-        }
-        else {
+        } else {
             alarmPeriod.setText("");
         }
-            alarmTime.setText(String.format("%02d:%02d", hour, minute));
+        alarmTime.setText(String.format("%02d:%02d", hour, minute));
     }
 
-    private void startPlaying(){
+    private void startPlaying() {
         if (alarmDetails.alarmTone != null) {
             playImageView.setImageResource(R.drawable.stop);
             if (chkRisingVolume.isChecked()) {
@@ -279,6 +280,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                 hardwareManager.PlayAlarm(alarmDetails.alarmTone, volumeSeekBar.getProgress());
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -286,7 +288,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1: {
-                    LinearLayout alarm_ringtone_container = (LinearLayout)findViewById(R.id.alarm_ringtone_container);
+                    LinearLayout alarm_ringtone_container = (LinearLayout) findViewById(R.id.alarm_ringtone_container);
                     alarm_ringtone_container.setBackgroundColor(getResources().getColor(R.color.black_overlay));
                     alarmDetails.alarmTone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                     TextView txtToneSelection = (TextView) findViewById(R.id.alarm_label_tone_selection);
@@ -304,11 +306,10 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         }
     }
 
-    public void updateSeekBar(){
-        if ( !chkRisingVolume.isChecked() && alarmDetails.alarmTone != null){
+    public void updateSeekBar() {
+        if (!chkRisingVolume.isChecked() && alarmDetails.alarmTone != null) {
             volumeSeekBar.setEnabled(true);
-        }
-        else
+        } else
             volumeSeekBar.setEnabled(false);
     }
 
@@ -355,7 +356,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         return super.onOptionsItemSelected(item);
     }
 
-    public void startDialogFragment(){
+    public void startDialogFragment() {
         SettingsDialogFragment dialogFragment = SettingsDialogFragment.newInstance(alarmDetails);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         dialogFragment.setShowsDialog(true);
@@ -391,17 +392,28 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu){
-        /*
-        MenuItem save = menu.findItem(R.id.action_save_alarm_details);
-        save.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        save.setIcon(R.drawable.action_save);
-        */
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem saveAlarm = menu.findItem(R.id.save_alarm);
+        saveAlarm.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        Drawable dr = getResources().getDrawable(R.drawable.save_alarm);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(),
+                Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+        saveAlarm.setIcon(d);
+
+        MenuItem deleteAlarm = menu.findItem(R.id.remove_alarm);
+        deleteAlarm.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        dr = getResources().getDrawable(R.drawable.remove_alarm);
+        bitmap = ((BitmapDrawable) dr).getBitmap();
+        d = new BitmapDrawable(getResources(),
+                Bitmap.createScaledBitmap(bitmap, 85, 85, true));
+        deleteAlarm.setIcon(d);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         hardwareManager.stopPlaying();
     }
@@ -415,7 +427,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         if (timeUntilAlarm.isEmpty()) {
             message = "No active days are set";
         } else {
-            if(alarmDetails.alarmTone == null) {
+            if (alarmDetails.alarmTone == null) {
                 message = "Alarm melody is not set";
                 alarmDetails.volume_rising = false;
             }
@@ -450,9 +462,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         } else {
             dbHelper.updateAlarm(alarmDetails);
         }
-        AlarmManagerHelper.setAlarms(this, true); // the only place where we should ignore weekly if it's for passed week
-        // just set next available day regardless if it has passed. add 1 parameter
-        // also once alarm played and it's not weekly, turn alarm off, so user doesn't get confused
+        AlarmManagerHelper.setAlarms(this, true);
         setResult(RESULT_OK);
     }
 

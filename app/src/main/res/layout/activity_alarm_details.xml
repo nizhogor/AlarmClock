@@ -2,15 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:isScrollContainer="true"
-    >
+    android:isScrollContainer="true">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:context=".AlarmDetailsActivity"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp">
+        android:layout_marginRight="4dp"
+        tools:context=".AlarmDetailsActivity">
 
 
         <!--
@@ -34,31 +33,35 @@
         </RadialPickerLayout>
         -->
         <LinearLayout
-            android:focusable="true" android:focusableInTouchMode="true"
-            android:layout_width="0px" android:layout_height="0px"/>
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
         <RelativeLayout
             android:id="@+id/alarm_time_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true">
-        <TextView
-            android:id="@+id/time_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:text="00:00"
-            android:textSize="@dimen/extra_large_clock_digits"
-            android:textColor="@color/bpWhite"/>
-        <TextView
-            android:id="@+id/details_time_period"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="am"
-            android:layout_toRightOf="@+id/time_picker"
-            android:textSize="@dimen/large_clock_digits"
-            android:layout_alignBaseline="@+id/time_picker"
-            android:textColor="@color/bpWhite" />
+
+            <TextView
+                android:id="@+id/time_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="00:00"
+                android:textColor="@color/bpWhite"
+                android:textSize="@dimen/extra_large_clock_digits" />
+
+            <TextView
+                android:id="@+id/details_time_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/time_picker"
+                android:layout_toRightOf="@+id/time_picker"
+                android:text="am"
+                android:textColor="@color/bpWhite"
+                android:textSize="@dimen/large_clock_digits" />
         </RelativeLayout>
 
         <EditText
@@ -70,7 +73,7 @@
             android:focusable="true"
             android:hint="@string/details_alarm_name"
 
-           />
+            />
 
 
         <View
@@ -103,8 +106,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/divider1"
             android:checked="true"
-            android:text="@string/details_sunday"
-            />
+            android:text="@string/details_sunday" />
 
         <nizhogor.com.flashalarm.CustomToggleButton
             android:id="@+id/alarm_details_repeat_monday"
@@ -178,21 +180,21 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/divider4"
-            android:orientation="vertical"
-            android:background="#000" >
+            android:background="#000"
+            android:orientation="vertical">
 
             <View
                 android:id="@+id/divider3"
                 style="@style/Divider"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/alarm_ringtone_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/alarm_ringtone_container" />
 
             <RelativeLayout
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:background="@drawable/view_touch_selector">
 
                 <LinearLayout
@@ -201,74 +203,73 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:background="@drawable/view_touch_selector"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/alarm_label_tone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/details_alarm_tone"
-                    android:textSize="18sp"
-                    android:textColor="@color/bpWhite"/>
+                    <TextView
+                        android:id="@+id/alarm_label_tone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:text="@string/details_alarm_tone"
+                        android:textColor="@color/bpWhite"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/alarm_label_tone_selection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/alarm_label_tone"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/details_alarm_tone_default"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/alarm_label_tone_selection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/alarm_label_tone"
+                        android:text="@string/details_alarm_tone_default"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/play_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/play_button"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:src = "@drawable/play"/>
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/play" />
 
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/volume_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/volume_container">
+                android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/left_volume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/left_volume"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-                    android:src = "@drawable/thumb_down"/>
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/thumb_down" />
 
                 <SeekBar
                     android:id="@+id/volume_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:progress="50"
-                    android:max="100"
-                    android:scaleType="fitCenter"
                     android:layout_toLeftOf="@+id/right_volume"
                     android:layout_toRightOf="@+id/left_volume"
+                    android:layout_weight="1"
                     android:enabled="false"
-                   />
+                    android:max="100"
+                    android:progress="50"
+                    android:scaleType="fitCenter" />
 
                 <ImageView
+                    android:id="@+id/right_volume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/right_volume"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:src = "@drawable/thumb"/>
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/thumb" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -287,24 +288,24 @@
 
 
         <nizhogor.com.flashalarm.CustomToggleButton
-        android:id="@+id/alarm_details_vibrate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/alarm_details_volume_rising"
-        android:checked="true"
-        android:text="@string/vibrate" />
+            android:id="@+id/alarm_details_vibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/alarm_details_volume_rising"
+            android:checked="true"
+            android:text="@string/vibrate" />
 
-    <nizhogor.com.flashalarm.CustomToggleButton
-        android:id="@+id/alarm_details_flash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/alarm_details_vibrate"
-        android:checked="true"
-        android:text="@string/flash" />
+        <nizhogor.com.flashalarm.CustomToggleButton
+            android:id="@+id/alarm_details_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/alarm_details_vibrate"
+            android:checked="true"
+            android:text="@string/flash" />
 
     </RelativeLayout>
 

@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
-        android:orderInCategory="0"
         android:id="@+id/action_add_new_alarm"
+        android:icon="@drawable/add_alarm"
+        android:orderInCategory="0"
         android:title="Add Alarm"
-        android:icon="@drawable/action_bar_add"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
 </menu>
