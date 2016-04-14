@@ -96,7 +96,6 @@ public class AlarmListActivity extends ListActivity {
     }
 
     public void setAlarmEnabled(long id, boolean isEnabled) {
-        AlarmManagerHelper.cancelAlarms(this);
 
         AlarmModel model = dbHelper.getAlarm(id);
         model.isEnabled = isEnabled;
@@ -115,8 +114,6 @@ public class AlarmListActivity extends ListActivity {
                 .setPositiveButton("Ok", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Cancel Alarms
-                        // AlarmManagerHelper.cancelAlarms(mContext);
                         //Delete alarm from DB by id
                         dbHelper.deleteAlarm(alarmId);
                         //Refresh the list of the alarms in the adaptor
@@ -124,7 +121,7 @@ public class AlarmListActivity extends ListActivity {
                         //Notify the adapter the data has changed
                         mAdapter.notifyDataSetChanged();
                         //Set the alarms
-                        // AlarmManagerHelper.setAlarms(mContext);
+                        AlarmManagerHelper.setAlarms(mContext, false);
                     }
                 }).show();
     }

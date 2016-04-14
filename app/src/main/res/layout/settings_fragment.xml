@@ -1,95 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/black_overlay">
+    android:background="@color/black_overlay"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/info_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:text="@string/fragment_custom_label"
         android:textColor="@color/bpWhite"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/vibrate_label"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/vibrate_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/info_label"
-        android:text="Vibrate"
-        android:textSize="20sp" />
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/vibrate_pattern"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/vibrate_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vibrate"
+            android:textColor="@color/bpWhite"
+            android:textSize="18sp"
+            android:layout_gravity="bottom|right" />
+
+        <EditText
+            android:id="@+id/vibrate_pattern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:focusable="true"
+            android:inputType="textVisiblePassword"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp" />
+
+        <ImageView
+            android:id="@+id/vibrate_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_vibration_white_24dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/flash_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/info_label"
-        android:layout_toRightOf="@+id/vibrate_label"
-        android:layout_toStartOf="@+id/flash_icon"
-        android:ems="10"
-        android:focusable="true"
-        android:hint="Vibrate pattern"
-        android:inputType="textVisiblePassword" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/flash_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/vibrate_pattern"
-        android:text="Flash"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/flash_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/bpWhite"
+            android:textSize="18sp"
+            android:text="Flash"
+            android:layout_gravity="bottom|right"
+            android:layout_marginLeft="13sp" />
 
+        <EditText
+            android:id="@+id/flash_pattern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:focusable="true"
+            android:inputType="textVisiblePassword"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp" />
 
-    <EditText
-        android:id="@+id/flash_pattern"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/vibrate_pattern"
-        android:layout_below="@+id/vibrate_pattern"
-        android:layout_toStartOf="@+id/flash_icon"
-        android:ems="10"
-        android:focusable="true"
-        android:hint="Flashlight pattern"
-        android:inputType="textVisiblePassword" />
+        <ImageView
+            android:id="@+id/flash_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="bottom"
+            android:baselineAlignBottom="true"
+            android:src="@drawable/ic_flash_on_white_24dp"
+            android:layout_marginLeft="10dp" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/divider1"
         style="@style/Divider"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/flash_pattern" />
+        android:layout_marginTop="5dp" />
 
     <nizhogor.com.flashalarm.CustomToggleButton
         android:id="@+id/digital_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/divider1"
         android:checked="true"
         android:text="Digital time picker" />
 
-    <ImageView
-        android:id="@+id/vibrate_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/info_label"
-        android:layout_marginLeft="44dp"
-        android:src="@drawable/ic_vibration_white_24dp" />
-
-    <ImageView
-        android:id="@+id/flash_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/vibrate_pattern"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="11dp"
-        android:src="@drawable/ic_flash_on_white_24dp" />
-
-
-</RelativeLayout>
+</LinearLayout>

@@ -21,6 +21,7 @@
     <string-array name="tone_sources">
         <item>Alarms</item>
         <item>Ringtones</item>
+        <item>Extra tones</item>
     </string-array>
     <string name="no_alarm_tone_toast">Alarm tone wasn\'t specified</string>
     <string name="pattern_hint">Alarm pattern may include following characters:\n(s)hort = 0.5s\n(m)edium = 1s\n(l)ong = 1.5s\n(e)xtra long = 2s\n(c)onstant = constantly on</string>
@@ -32,4 +33,13 @@
     <string name="bug_adress">nizhogor@gmail.com</string>
     <string name="bug_toast_body">Please email to</string>
     <string name="fragment_custom_label">Custom alarm patterns</string>
+    <string name="title_activity_help">HelpActivity</string>
+
+    <!--Help texts-->
+    <string name="settings_help">1. Click on a label to view a hint.
+        \n2. Click on an icon to play the pattern you entered in [3].
+    \n3. Enter pattern for vibration. For instance entering "smle" for vibration pattern would produce (s)hort, (m)edium, (l)ong and
+    (e)xtra long bursts of vibration which will be repeating once alarm is triggered. Entering <i>c</i> would remove entire pattern and stands
+        for (c)onstant on for both vibration and flash light.
+    \n4. Digital picker allows entering digits in [5] to set up alarm time. When off, time picker is replaced with analog watch face.</string>
 </resources>

@@ -139,7 +139,8 @@ public class SettingsDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Window window = getDialog().getWindow();
+        window.requestFeature(Window.FEATURE_NO_TITLE);
         View v = inflater.inflate(R.layout.settings_fragment, container, false);
         mFlashPattern = (TextView) v.findViewById(R.id.flash_pattern);
         mVibratePattern = (TextView) v.findViewById(R.id.vibrate_pattern);

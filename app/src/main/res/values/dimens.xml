@@ -3,15 +3,16 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name = "extra_large_clock_digits">62sp</dimen>
-    <dimen name = "medium_clock_digits">30sp</dimen>
-    <dimen name = "large_clock_digits">34sp</dimen>
-    <dimen name = "time_period">20sp</dimen>
-    <dimen name = "active_day_letter_with_period">20sp</dimen>
-    <dimen name = "active_day_letter">16sp</dimen>
-    <dimen name = "alarm_name">21sp</dimen>
-    <dimen name = "details_day">20sp</dimen>
-    <dimen name = "toast_size">18sp</dimen>
-    <dimen name = "vibrate_margin_with_period">58sp</dimen>
-    <dimen name = "vibrate_margin">44sp</dimen>
+    <dimen name="extra_large_clock_digits">62sp</dimen>
+    <dimen name="medium_clock_digits">30sp</dimen>
+    <dimen name="large_clock_digits">34sp</dimen>
+    <dimen name="time_period">20sp</dimen>
+    <dimen name="active_day_letter_with_period">20sp</dimen>
+    <dimen name="active_day_letter">16sp</dimen>
+    <dimen name="alarm_name">21sp</dimen>
+    <dimen name="details_day">20sp</dimen>
+    <dimen name="toast_size">18sp</dimen>
+    <dimen name="vibrate_margin_with_period">58sp</dimen>
+    <dimen name="vibrate_margin">44sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

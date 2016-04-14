@@ -3,6 +3,7 @@ package nizhogor.com.flashalarm;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -220,6 +222,11 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                                         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
                                         startActivityForResult(intent, 1);
                                         break;
+                                    case 2:
+                                        intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                                        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.EXTRA_RINGTONE_TYPE);
+                                        startActivityForResult(intent, 1);
+                                        break;
                                 }
                             }
                         }).show();
@@ -290,9 +297,16 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                 case 1: {
                     LinearLayout alarm_ringtone_container = (LinearLayout) findViewById(R.id.alarm_ringtone_container);
                     alarm_ringtone_container.setBackgroundColor(getResources().getColor(R.color.black_overlay));
-                    alarmDetails.alarmTone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+                    alarmDetails.alarmTone = uri;
                     TextView txtToneSelection = (TextView) findViewById(R.id.alarm_label_tone_selection);
-                    txtToneSelection.setText(RingtoneManager.getRingtone(this, alarmDetails.alarmTone).getTitle(this));
+                    if (uri == null) {
+                        txtToneSelection.setText("Silent");
+                    } else {
+                        Ringtone ringtone = RingtoneManager.getRingtone(this, alarmDetails.alarmTone);
+                        txtToneSelection.setText(ringtone.getTitle(this));
+                    }
                     updateSeekBar();
                     break;
                 }
@@ -317,20 +331,27 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case R.id.save_alarm:
+                onBackPressed();
+                break;
+            case R.id.remove_alarm:
+                // if new alarm, simply drop model
+                if (alarmDetails.id > 0) {
+                    (new AlarmDBHelper(this)).deleteAlarm(alarmDetails.id);
+                }
+                setResult(RESULT_OK);
+                finish();
+                break;
             case R.id.additional_options: {
                 startDialogFragment();
-                break;
-            }
-            case R.id.save_alarm: {
-                saveAlarm();
                 break;
             }
             case R.id.report: {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:")); // only email apps should handle this
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"nizhogor@gmail.com"});
-                intent.putExtra(Intent.EXTRA_SUBJECT, "subj");
-                if (false && intent.resolveActivity(getPackageManager()) != null) {
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Problem with FlashAlarm");
+                if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 } else {
                     View layout = getLayoutInflater().inflate(R.layout.toast_layout,
@@ -348,6 +369,26 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                     toast.show();
                 }
             }
+            case R.id.rate:
+                String packageName = this.getPackageName();
+                Uri uri = Uri.parse("market://details?id=" + packageName);
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                // To count with Play market backstack, After pressing back button,
+                // to taken back to our application, we need to add following flags to intent.
+                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + packageName)));
+                }
+                break;
+            case R.id.help:
+                Intent launchHelp = new Intent(this, HelpActivity.class);
+                startActivity(launchHelp);
+                break;
             default:
                 finish();
                 break;
@@ -449,7 +490,6 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
-
 
         saveAlarm();
         super.onBackPressed();

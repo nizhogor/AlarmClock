@@ -23,11 +23,16 @@
     <item
         android:id="@+id/rate"
         android:orderInCategory="3"
-        android:title="Rate app"
+        android:title="Give Feedback"
         app:showAsAction="never" />
     <item
         android:id="@+id/report"
         android:orderInCategory="4"
-        android:title="Report bugs"
+        android:title="Report a problem"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/help"
+        android:orderInCategory="5"
+        android:title="Help"
         app:showAsAction="never" />
 </menu>

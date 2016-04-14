@@ -218,9 +218,9 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             } else {
                 alert += ((inMinutes == 0) ? inMinutes : inHours);
                 if (inMinutes != 0)
-                    alert += "minute";
+                    alert += inMinutes + " minute";
                 else
-                    alert += "hour";
+                    alert += inHours + " hour";
                 if (inMinutes + inHours > 1) {
                     alert += "s";
                 }

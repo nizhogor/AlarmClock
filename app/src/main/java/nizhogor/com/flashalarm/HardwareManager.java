@@ -60,7 +60,8 @@ public class HardwareManager {
             mPlayer.setDataSource(mContext, alarmTone);
             mPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             mPlayer.setLooping(true);
-            mPlayer.setVolume(volume, volume);
+            float volumeLevel = AlarmModel.getVolumeFloat((int) volume);
+            mPlayer.setVolume(volumeLevel, volumeLevel);
             mPlayer.prepare();
             mPlayer.start();
         } catch (IOException e) {
