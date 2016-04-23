@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nizhogor.com.flashalarm">
+    package="com.nizhogor.flashalarm">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -20,9 +20,7 @@
             android:label="FlashAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </activity>
@@ -55,10 +53,11 @@
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
-            android:parentActivityName=".AlarmDetailsActivity">
+            android:parentActivityName=".AlarmDetailsActivity"
+            android:theme="@android:style/Theme.NoTitleBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="nizhogor.com.flashalarm.AlarmDetailsActivity" />
+                android:value="com.nizhogor.flashalarm.AlarmDetailsActivity" />
         </activity>
     </application>
 

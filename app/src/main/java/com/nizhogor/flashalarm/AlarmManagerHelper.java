@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -23,23 +23,23 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     public static final String FLASH = "flash";
     public static final String VIBRATE_PATTERN = "vibrate_pattern";
     public static final String FLASH_PATTERN = "flash_pattern";
+    public static final String ALARM_TIMESTAMP_MILLIS = "alarm_timestamp_millis";
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        System.out.println("Triggered: "+System.currentTimeMillis());
         setAlarms(context, false);
     }
 
     public static void setAlarms(Context context, boolean ignoreWeekly) {
         cancelAlarms(context);
 
-        AlarmDBHelper dbHelper = new AlarmDBHelper(context);
+        com.nizhogor.flashalarm.AlarmDBHelper dbHelper = new com.nizhogor.flashalarm.AlarmDBHelper(context);
 
-        List<AlarmModel> alarms = dbHelper.getAlarms();
+        List<com.nizhogor.flashalarm.AlarmModel> alarms = dbHelper.getAlarms();
         if (alarms != null) {
-            for (AlarmModel alarm : alarms) {
+            for (com.nizhogor.flashalarm.AlarmModel alarm : alarms) {
                 if (alarm.isEnabled) {
-
-                    PendingIntent pIntent = createPendingIntent(context, alarm);
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, alarm.timeHour);
@@ -59,7 +59,6 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                                 !(dayOfWeek == nowDay && alarm.timeHour == nowHour && alarm.timeMinute <= nowMinute)) {
                             calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 
-                            setAlarm(context, calendar, pIntent);
                             alarmSet = true;
                             break;
                         }
@@ -72,17 +71,18 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                                 calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
                                 calendar.add(Calendar.WEEK_OF_YEAR, 1);
 
-                                setAlarm(context, calendar, pIntent);
+
                                 alarmSet = true;
                                 break;
                             }
                         }
                     }
-                    /*
-                    if (!alarmSet) {
-                        ((AlarmListActivity) context).setAlarmEnabled(alarm.id, false);
+
+                    if (alarmSet) {
+                        PendingIntent pIntent = createPendingIntent(context, alarm, calendar.getTimeInMillis());
+                        setAlarm(context, calendar, pIntent);
                     }
-                    */
+
                 }
             }
         }
@@ -99,14 +99,14 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     }
 
     public static void cancelAlarms(Context context) {
-        AlarmDBHelper dbHelper = new AlarmDBHelper(context);
+        com.nizhogor.flashalarm.AlarmDBHelper dbHelper = new com.nizhogor.flashalarm.AlarmDBHelper(context);
 
-        List<AlarmModel> alarms = dbHelper.getAlarms();
+        List<com.nizhogor.flashalarm.AlarmModel> alarms = dbHelper.getAlarms();
 
         if (alarms != null) {
-            for (AlarmModel alarm : alarms) {
+            for (com.nizhogor.flashalarm.AlarmModel alarm : alarms) {
                 if (alarm.isEnabled) {
-                    PendingIntent pIntent = createPendingIntent(context, alarm);
+                    PendingIntent pIntent = createPendingIntent(context, alarm, 0);
 
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     alarmManager.cancel(pIntent);
@@ -115,8 +115,8 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         }
     }
 
-    private static PendingIntent createPendingIntent(Context context, AlarmModel model) {
-        Intent intent = new Intent(context, AlarmService.class);
+    private static PendingIntent createPendingIntent(Context context, com.nizhogor.flashalarm.AlarmModel model, long alarmTimeMillis) {
+        Intent intent = new Intent(context, com.nizhogor.flashalarm.AlarmService.class);
         intent.putExtra(ID, model.id);
         intent.putExtra(NAME, model.name);
         intent.putExtra(TIME_HOUR, model.timeHour);
@@ -128,11 +128,13 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         intent.putExtra(VOLUME_RISING, model.volume_rising);
         intent.putExtra(FLASH_PATTERN, model.flash_pattern);
         intent.putExtra(VIBRATE_PATTERN, model.vibrate_pattern);
+        // used to prevent existing alarm being triggered, when time is moved forward
+        intent.putExtra(ALARM_TIMESTAMP_MILLIS, alarmTimeMillis);
 
         return PendingIntent.getService(context, (int) model.id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static String getTimeUntilAlarm(AlarmModel alarm) {
+    public static String getTimeUntilAlarm(com.nizhogor.flashalarm.AlarmModel alarm) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, alarm.timeHour);
         calendar.set(Calendar.MINUTE, alarm.timeMinute);
@@ -172,6 +174,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         }
 
         long difference = calendar.getTimeInMillis() - System.currentTimeMillis();
+        long original = difference;
 
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
@@ -184,8 +187,16 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         long inHours = difference / hoursInMilli;
         difference = difference % hoursInMilli;
 
+        long millis = difference;
         long inMinutes = difference / minutesInMilli;
         difference = difference % minutesInMilli;
+        if (0 < difference) { // time can be set when current minute is halfway through
+            inMinutes++;
+        }
+        if (inMinutes == 60) {
+            inMinutes = 0;
+            inHours++;
+        }
 
         String intro = "Alarm is set for ";
         String alert = intro;
@@ -200,11 +211,11 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             } else if (inMinutes == 0 && inHours == 0) {
                 // do nothing
             } else {
-                alert += " and " + ((inMinutes == 0) ? inMinutes : inHours);
+                alert += " and " + ((inMinutes != 0) ? inMinutes : inHours);
                 if (inMinutes != 0)
-                    alert += "minute";
+                    alert += " minute";
                 else
-                    alert += "hour";
+                    alert += " hour";
                 if (inMinutes + inHours > 1) {
                     alert += "s";
                 }
@@ -216,7 +227,6 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             } else if (inMinutes == 0 && inHours == 0) {
                 // do nothing
             } else {
-                alert += ((inMinutes == 0) ? inMinutes : inHours);
                 if (inMinutes != 0)
                     alert += inMinutes + " minute";
                 else

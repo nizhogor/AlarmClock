@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -50,7 +50,8 @@ public class HardwareManager {
 
     }
 
-    public void PlayAlarm(Uri alarmTone, float volume) {
+    public void PlayAlarm(String alarmToneStr, float volume) {
+        Uri alarmTone = Uri.parse(alarmToneStr);
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.stop();
             mPlayer.release();
@@ -60,7 +61,7 @@ public class HardwareManager {
             mPlayer.setDataSource(mContext, alarmTone);
             mPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             mPlayer.setLooping(true);
-            float volumeLevel = AlarmModel.getVolumeFloat((int) volume);
+            float volumeLevel = com.nizhogor.flashalarm.AlarmModel.getVolumeFloat((int) volume);
             mPlayer.setVolume(volumeLevel, volumeLevel);
             mPlayer.prepare();
             mPlayer.start();
@@ -69,9 +70,9 @@ public class HardwareManager {
         }
     }
 
-    public void PlayRisingAlarm(Uri alarmTone) {
+    public void PlayRisingAlarm(String alarmToneStr) {
         startVolume = 1;
-        PlayAlarm(alarmTone, AlarmModel.getVolumeFloat(startVolume));
+        PlayAlarm(alarmToneStr, com.nizhogor.flashalarm.AlarmModel.getVolumeFloat(startVolume));
         //AudioManager audioManager = (AudioManager) mContext.getSystemService(mContext.AUDIO_SERVICE);
         //audioManager.setStreamVolume (AudioManager.STREAM_ALARM, 1,0);
 
@@ -84,7 +85,7 @@ public class HardwareManager {
 
                 if (startVolume < 100) {
                     startVolume += 1;
-                    float volume = AlarmModel.getVolumeFloat(startVolume);
+                    float volume = com.nizhogor.flashalarm.AlarmModel.getVolumeFloat(startVolume);
                     //audioManager.setStreamVolume (AudioManager.STREAM_ALARM, currentAlarmVolume+3,0);
                     mPlayer.setVolume(volume, volume);
                 } else
@@ -133,7 +134,7 @@ public class HardwareManager {
 
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         if (pattern[1] == -1L) {
-            mVibrator.vibrate(5 * 60 * 1000);
+            mVibrator.vibrate(10 * 60 * 1000); // 10 mins by default
         } else {
             mVibrator.vibrate(pattern, 0);
         }

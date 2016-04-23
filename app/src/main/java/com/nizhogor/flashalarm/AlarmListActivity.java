@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -100,7 +100,6 @@ public class AlarmListActivity extends ListActivity {
         AlarmModel model = dbHelper.getAlarm(id);
         model.isEnabled = isEnabled;
         dbHelper.updateAlarm(model);
-
         AlarmManagerHelper.setAlarms(this, true);
     }
 

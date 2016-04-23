@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.app.Service;
 import android.content.Intent;
@@ -18,15 +18,19 @@ public class AlarmService extends Service {
 
         Intent alarmIntent = new Intent(getBaseContext(), AlarmScreen.class);
         if (intent != null) {
-            alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            alarmIntent.putExtras(intent);
-            getApplication().startActivity(alarmIntent);
+            long alarmTimestamp = intent.getLongExtra(AlarmManagerHelper.ALARM_TIMESTAMP_MILLIS, -1);
+            // if difference is more than 60 sec means that alarm is triggered by moving system time forward
+            long difference = Math.abs(System.currentTimeMillis()-alarmTimestamp);
+            if ( difference < 60 * 1000) {
+                alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                alarmIntent.putExtras(intent);
+                getApplication().startActivity(alarmIntent);
+            }
             AlarmManagerHelper.setAlarms(this, false);
+
         } else
             System.out.println("----->Intent is null");
 
-
         return super.onStartCommand(intent, flags, startId);
     }
-
 }

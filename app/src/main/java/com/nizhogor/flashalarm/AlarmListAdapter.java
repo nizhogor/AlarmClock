@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.content.Context;
 import android.content.res.Resources;

@@ -38,8 +38,34 @@
     <!--Help texts-->
     <string name="settings_help">1. Click on a label to view a hint.
         \n2. Click on an icon to play the pattern you entered in [3].
-    \n3. Enter pattern for vibration. For instance entering "smle" for vibration pattern would produce (s)hort, (m)edium, (l)ong and
-    (e)xtra long bursts of vibration which will be repeating once alarm is triggered. Entering <i>c</i> would remove entire pattern and stands
+        \n3. Enter pattern for vibration or flash. For instance entering \"smle\" for vibration would produce (s)hort, (m)edium, (l)ong and
+        (e)xtra long bursts of vibration which repeats once alarm is triggered. Entering \"c\" would remove entire pattern and stands
         for (c)onstant on for both vibration and flash light.
-    \n4. Digital picker allows entering digits in [5] to set up alarm time. When off, time picker is replaced with analog watch face.</string>
+        \n4. Digital picker allows entering digits in Alarm Settings when setting up alarm time. When off, digital time picker is replaced with analog watch face.
+    </string>
+
+
+      <string name="active_help">1. Add new alarm
+          \n2. Alarm time. Shows in 24 or 12 hour format depending on your phone settings.
+          \n3. Click and hold anywhere within active alarm to delete it.
+          \n4. Icons left to right indicate whether vibration, flashlight or rising volume are set up.
+          \n5. To disable alarm tap ON button. Unless Repeat Weekly is set in Alarm Settings, alarm will
+          get disabled automatically after all of this week\'s alarms got triggered.
+    </string>
+
+      <string name="details_help">1. Tap to return to Active Alarms. Current alarm is not saved.
+          \n2. Delete current alarm. Helpful if alarm is already in Active Alarms. Otherwise equivalent to [1].
+          \n3. Save alarm and return to Active Alarms.
+          \n4. Additional Settings and other menu items available there.
+          \n5. Tapping on time allows to set alarm time. Digital or analog time picker can be set in Additional Settings.
+          \n6. Press to play current alarm. Alarm tone must be set first. Plays at the level set in [7] or gradually increases volume
+          if Rising volume is set in [8].
+          \n7. Changes volume if Rising volume is not set. Setting to the lowest level equivalent to choosing Silent for Alarm Tone.
+          \n8. Utilize available hardware to make alarm more noticeable. Custom vibration and flashlight patterns are available in
+          [4]\'s Additional Settings.
+          \n9. Pressing phone back key is equivalent to tapping 3 and saving alarm.
+      </string>
+
+    <string name="play_no_tone">Choose alarm tone to play.</string>
+
 </resources>

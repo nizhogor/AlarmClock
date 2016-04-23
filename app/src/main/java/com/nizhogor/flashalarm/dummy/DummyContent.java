@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm.dummy;
+package com.nizhogor.flashalarm.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

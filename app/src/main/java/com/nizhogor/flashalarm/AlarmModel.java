@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.net.Uri;
 
@@ -17,7 +17,7 @@ public class AlarmModel {
     public int timeMinute;
     private boolean repeatingDays[];
     public boolean repeatWeekly;
-    public Uri alarmTone;
+    public String alarmTone;
     public String name;
     public boolean isEnabled;
 

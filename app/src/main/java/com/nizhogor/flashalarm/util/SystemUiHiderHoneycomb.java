@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm.util;
+package com.nizhogor.flashalarm.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

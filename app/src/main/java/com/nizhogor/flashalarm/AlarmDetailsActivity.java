@@ -1,6 +1,7 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
@@ -25,9 +26,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,37 +47,48 @@ import com.doomonafireball.betterpickers.timepicker.TimePickerDialogFragment;
 
 import java.util.Calendar;
 
-
 public class AlarmDetailsActivity extends FragmentActivity implements TimePickerDialogFragment.TimePickerDialogHandler,
-        SettingsDialogFragment.OnFragmentInteractionListener {
+        com.nizhogor.flashalarm.SettingsDialogFragment.OnFragmentInteractionListener {
+
+    private static final int singleShotSave = 1;
+    private static final int singleShotMenu = 2;
 
     private TimePicker timePicker;
     private TextView alarmTime;
     private TextView alarmPeriod;
     private EditText edtName;
-    private CustomToggleButton chkWeekly;
-    private CustomToggleButton chkSunday;
-    private CustomToggleButton chkMonday;
-    private CustomToggleButton chkTuesday;
-    private CustomToggleButton chkWednesday;
-    private CustomToggleButton chkThursday;
-    private CustomToggleButton chkFriday;
-    private CustomToggleButton chkSaturday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkWeekly;
+    private com.nizhogor.flashalarm.CustomToggleButton chkSunday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkMonday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkTuesday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkWednesday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkThursday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkFriday;
+    private com.nizhogor.flashalarm.CustomToggleButton chkSaturday;
     private TextView txtToneSelection;
 
-    private CustomToggleButton chkVibrate;
-    private CustomToggleButton chkFlash;
-    private CustomToggleButton chkRisingVolume;
+    private com.nizhogor.flashalarm.CustomToggleButton chkVibrate;
+    private com.nizhogor.flashalarm.CustomToggleButton chkFlash;
+    private com.nizhogor.flashalarm.CustomToggleButton chkRisingVolume;
+    private View volumeContainer;
     private SeekBar volumeSeekBar;
     private ImageView playImageView;
 
-    private AlarmModel alarmDetails = new AlarmModel();
-    private AlarmDBHelper dbHelper = new AlarmDBHelper(this);
+    private com.nizhogor.flashalarm.AlarmModel alarmDetails = new com.nizhogor.flashalarm.AlarmModel();
+    private com.nizhogor.flashalarm.AlarmDBHelper dbHelper = new com.nizhogor.flashalarm.AlarmDBHelper(this);
     private Context mContext = this;
-    private HardwareManager hardwareManager;
+    private com.nizhogor.flashalarm.HardwareManager hardwareManager;
     private int startVolume = 1;
     private boolean isTimeSet = false;
     private static final int SETTINGS = 2;
+
+    private static final String KEY_ID = "AlarmDetailsActivity:id";
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putLong(KEY_ID, alarmDetails.id);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,53 +96,72 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_details);
         setupActionBar();
-        hardwareManager = new HardwareManager(mContext);
+        hardwareManager = new com.nizhogor.flashalarm.HardwareManager(mContext);
 
         alarmTime = (TextView) findViewById(R.id.time_picker);
         alarmPeriod = (TextView) findViewById(R.id.details_time_period);
         edtName = (EditText) findViewById(R.id.alarm_details_name);
-        chkWeekly = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_weekly);
-        chkSunday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_sunday);
-        chkMonday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_monday);
-        chkTuesday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_tuesday);
-        chkWednesday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_wednesday);
-        chkThursday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_thursday);
-        chkFriday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_friday);
-        chkSaturday = (CustomToggleButton) findViewById(R.id.alarm_details_repeat_saturday);
+        chkWeekly = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_weekly);
+        chkSunday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_sunday);
+        chkMonday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_monday);
+        chkTuesday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_tuesday);
+        chkWednesday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_wednesday);
+        chkThursday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_thursday);
+        chkFriday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_friday);
+        chkSaturday = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_repeat_saturday);
         txtToneSelection = (TextView) findViewById(R.id.alarm_label_tone_selection);
 
-        chkVibrate = (CustomToggleButton) findViewById(R.id.alarm_details_vibrate);
-        chkFlash = (CustomToggleButton) findViewById(R.id.alarm_details_flash);
-        chkRisingVolume = (CustomToggleButton) findViewById(R.id.alarm_details_volume_rising);
+        chkVibrate = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_vibrate);
+        chkFlash = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_flash);
+        chkRisingVolume = (com.nizhogor.flashalarm.CustomToggleButton) findViewById(R.id.alarm_details_volume_rising);
         volumeSeekBar = (SeekBar) findViewById(R.id.volume_bar);
+        volumeContainer= findViewById(R.id.volume_container);
         playImageView = (ImageView) findViewById(R.id.play_button);
 
-        long id = getIntent().getExtras().getLong("id");
+        setSoftKeyLogic(findViewById(R.id.root_layout));
+        long id = -1;
+        if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_ID)) {
+            id = savedInstanceState.getLong(KEY_ID);
+        } else {
+            Intent intent = getIntent();
+            if (intent != null) {
+                id = intent.getExtras().getLong("id");
+            }
+        }
         //long id = -1;
         if (id == -1) {
-            alarmDetails = new AlarmModel();
+            alarmDetails = new com.nizhogor.flashalarm.AlarmModel();
             Calendar c = Calendar.getInstance();
             setAlarmTime(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
-            volumeSeekBar.setEnabled(false);
+            //volumeSeekBar.setEnabled(false);
         } else {
             alarmDetails = dbHelper.getAlarm(id);
             edtName.setText(alarmDetails.name);
             chkWeekly.setChecked(alarmDetails.repeatWeekly);
-            chkSunday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.SUNDAY));
-            chkMonday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.MONDAY));
-            chkTuesday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.TUESDAY));
-            chkWednesday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.WEDNESDAY));
-            chkThursday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.THURSDAY));
-            chkFriday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.FRIDAY));
-            chkSaturday.setChecked(alarmDetails.getRepeatingDay(AlarmModel.SATURDAY));
+            chkSunday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.SUNDAY));
+            chkMonday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.MONDAY));
+            chkTuesday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.TUESDAY));
+            chkWednesday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.WEDNESDAY));
+            chkThursday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.THURSDAY));
+            chkFriday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.FRIDAY));
+            chkSaturday.setChecked(alarmDetails.getRepeatingDay(com.nizhogor.flashalarm.AlarmModel.SATURDAY));
 
-            if (alarmDetails.alarmTone != null)
-                txtToneSelection.setText(RingtoneManager.getRingtone(this, alarmDetails.alarmTone).getTitle(this));
-            updateSeekBar();
+            if (alarmDetails.alarmTone.equals("")) {
+                txtToneSelection.setText("Silent");
+            } else {
+                String title = RingtoneManager.getRingtone(this, Uri.parse(alarmDetails.alarmTone)).getTitle(this);
+                txtToneSelection.setText(title);
+            }
+
             chkVibrate.setChecked(alarmDetails.vibrate);
             chkFlash.setChecked(alarmDetails.flash);
             chkRisingVolume.setChecked(alarmDetails.volume_rising);
             volumeSeekBar.setProgress(alarmDetails.getVolumeInt());
+            if (chkRisingVolume.isChecked()) {
+                volumeContainer.setVisibility(View.GONE);
+            } else {
+                volumeContainer.setVisibility(View.VISIBLE);
+            }
             playImageView.setImageResource(R.drawable.play);
             setAlarmTime(alarmDetails.timeHour, alarmDetails.timeMinute);
         }
@@ -235,6 +270,38 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
 
     }
 
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void setSoftKeyLogic(View view) {
+
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+
+            view.setOnTouchListener(new View.OnTouchListener() {
+
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard();
+                    return false;
+                }
+
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+
+                View innerView = ((ViewGroup) view).getChildAt(i);
+
+                setSoftKeyLogic(innerView);
+            }
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -279,12 +346,14 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
     private void startPlaying() {
-        if (alarmDetails.alarmTone != null) {
+        if (alarmDetails.alarmTone != null && !alarmDetails.alarmTone.equals("")) {
             playImageView.setImageResource(R.drawable.stop);
             if (chkRisingVolume.isChecked()) {
                 hardwareManager.PlayRisingAlarm(alarmDetails.alarmTone);
             } else
                 hardwareManager.PlayAlarm(alarmDetails.alarmTone, volumeSeekBar.getProgress());
+        } else {
+            showToast(getResources().getString(R.string.play_no_tone));
         }
     }
 
@@ -299,15 +368,15 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                     alarm_ringtone_container.setBackgroundColor(getResources().getColor(R.color.black_overlay));
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 
-                    alarmDetails.alarmTone = uri;
+                    alarmDetails.alarmTone = (uri == null) ? "" : uri.toString();
                     TextView txtToneSelection = (TextView) findViewById(R.id.alarm_label_tone_selection);
                     if (uri == null) {
                         txtToneSelection.setText("Silent");
                     } else {
-                        Ringtone ringtone = RingtoneManager.getRingtone(this, alarmDetails.alarmTone);
+                        Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
                         txtToneSelection.setText(ringtone.getTitle(this));
                     }
-                    updateSeekBar();
+                    //updateSeekBar();
                     break;
                 }
                 case SETTINGS: {
@@ -320,11 +389,43 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         }
     }
 
+
     public void updateSeekBar() {
-        if (!chkRisingVolume.isChecked() && alarmDetails.alarmTone != null) {
-            volumeSeekBar.setEnabled(true);
-        } else
-            volumeSeekBar.setEnabled(false);
+
+        if (!chkRisingVolume.isChecked()) {
+            volumeContainer.setAnimation(AnimationUtils.loadAnimation(this, R.anim.abc_slide_in_bottom));
+            volumeContainer.setVisibility(View.VISIBLE);
+
+            //findViewById(R.id.hardware_buttons_container).setAnimation(AnimationUtils.loadAnimation(this, R.anim.abc_slide_out_bottom));
+
+           /* volumeContainer.animate()
+                    .alpha(1f)
+                    .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
+                    .setListener(null);*/
+        } else {
+            showToast("slide out");
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.abc_slide_out_bottom);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    volumeContainer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            volumeContainer.startAnimation(animation);
+            //
+
+        }
+
     }
 
     @Override
@@ -337,7 +438,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             case R.id.remove_alarm:
                 // if new alarm, simply drop model
                 if (alarmDetails.id > 0) {
-                    (new AlarmDBHelper(this)).deleteAlarm(alarmDetails.id);
+                    (new com.nizhogor.flashalarm.AlarmDBHelper(this)).deleteAlarm(alarmDetails.id);
                 }
                 setResult(RESULT_OK);
                 finish();
@@ -354,27 +455,16 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 } else {
-                    View layout = getLayoutInflater().inflate(R.layout.toast_layout,
-                            (ViewGroup) findViewById(R.id.toast_layout_root));
-
-                    TextView text = (TextView) layout.findViewById(R.id.text);
                     Resources resources = getResources();
-                    String toastText = resources.getString(R.string.bug_toast_body) + " " + resources.getString(R.string.bug_adress);
-                    text.setText(toastText);
-
-                    Toast toast = new Toast(getApplicationContext());
-                    toast.setGravity(Gravity.BOTTOM, 0, 0);
-                    toast.setDuration(Toast.LENGTH_LONG);
-                    toast.setView(layout);
-                    toast.show();
+                    String message = resources.getString(R.string.bug_toast_body) + " " + resources.getString(R.string.bug_adress);
+                    showToast(message);
                 }
             }
             case R.id.rate:
                 String packageName = this.getPackageName();
                 Uri uri = Uri.parse("market://details?id=" + packageName);
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                // To count with Play market backstack, After pressing back button,
-                // to taken back to our application, we need to add following flags to intent.
+
                 goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
                         Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
                         Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -386,7 +476,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
                 }
                 break;
             case R.id.help:
-                Intent launchHelp = new Intent(this, HelpActivity.class);
+                Intent launchHelp = new Intent(this, com.nizhogor.flashalarm.HelpActivity.class);
                 startActivity(launchHelp);
                 break;
             default:
@@ -398,7 +488,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
     public void startDialogFragment() {
-        SettingsDialogFragment dialogFragment = SettingsDialogFragment.newInstance(alarmDetails);
+        com.nizhogor.flashalarm.SettingsDialogFragment dialogFragment = com.nizhogor.flashalarm.SettingsDialogFragment.newInstance(alarmDetails);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         dialogFragment.setShowsDialog(true);
         dialogFragment.show(ft, "dialog");
@@ -407,13 +497,13 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     private void updateModelFromLayout() {
         alarmDetails.name = edtName.getText().toString();
         alarmDetails.repeatWeekly = chkWeekly.isChecked();
-        alarmDetails.setRepeatingDay(AlarmModel.SUNDAY, chkSunday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.MONDAY, chkMonday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.TUESDAY, chkTuesday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.WEDNESDAY, chkWednesday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.THURSDAY, chkThursday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.FRIDAY, chkFriday.isChecked());
-        alarmDetails.setRepeatingDay(AlarmModel.SATURDAY, chkSaturday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.SUNDAY, chkSunday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.MONDAY, chkMonday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.TUESDAY, chkTuesday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.WEDNESDAY, chkWednesday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.THURSDAY, chkThursday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.FRIDAY, chkFriday.isChecked());
+        alarmDetails.setRepeatingDay(com.nizhogor.flashalarm.AlarmModel.SATURDAY, chkSaturday.isChecked());
         alarmDetails.timeHour = getHourFromTextView();
         alarmDetails.timeMinute = getMinuteFromTextView();
 
@@ -462,13 +552,13 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     @Override
     public void onBackPressed() {
         updateModelFromLayout();
-        String timeUntilAlarm = AlarmManagerHelper.getTimeUntilAlarm(alarmDetails);
+        String timeUntilAlarm = com.nizhogor.flashalarm.AlarmManagerHelper.getTimeUntilAlarm(alarmDetails);
 
         String message = "";
         if (timeUntilAlarm.isEmpty()) {
             message = "No active days are set";
         } else {
-            if (alarmDetails.alarmTone == null) {
+            if (alarmDetails.alarmTone.equals("")) {
                 message = "Alarm melody is not set";
                 alarmDetails.volume_rising = false;
             }
@@ -478,6 +568,12 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             message = timeUntilAlarm;
         }
 
+        showToast(message);
+        saveAlarm();
+        super.onBackPressed();
+    }
+
+    public void showToast(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_layout,
                 (ViewGroup) findViewById(R.id.toast_layout_root));
@@ -490,19 +586,15 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
-
-        saveAlarm();
-        super.onBackPressed();
     }
 
     private void saveAlarm() {
-        AlarmManagerHelper.cancelAlarms(this);
         if (alarmDetails.id < 0) {
             dbHelper.createAlarm(alarmDetails);
         } else {
             dbHelper.updateAlarm(alarmDetails);
         }
-        AlarmManagerHelper.setAlarms(this, true);
+        com.nizhogor.flashalarm.AlarmManagerHelper.setAlarms(this, true);
         setResult(RESULT_OK);
     }
 
@@ -512,7 +604,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
     @Override
-    public void onFragmentInteraction(AlarmModel alarmModel) {
+    public void onFragmentInteraction(com.nizhogor.flashalarm.AlarmModel alarmModel) {
 
     }
 }

@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm;
+package com.nizhogor.flashalarm;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,7 @@ public class AlarmScreen extends Activity {
     private Vibrator mVibrator;
     private float startVolume = (float) 0.1f;
     private static final int WAKELOCK_TIMEOUT = 60 * 1000;
-    private HardwareManager hardwareManager;
+    private com.nizhogor.flashalarm.HardwareManager hardwareManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +39,20 @@ public class AlarmScreen extends Activity {
         this.setContentView(R.layout.activity_alarm_screen);
         Intent intent = getIntent();
 
-        String name = intent.getStringExtra(AlarmManagerHelper.NAME);
-        int timeHour = intent.getIntExtra(AlarmManagerHelper.TIME_HOUR, 0);
-        int timeMinute = intent.getIntExtra(AlarmManagerHelper.TIME_MINUTE, 0);
-        String tone = intent.getStringExtra(AlarmManagerHelper.TONE);
+        String name = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.NAME);
+        int timeHour = intent.getIntExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TIME_HOUR, 0);
+        int timeMinute = intent.getIntExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TIME_MINUTE, 0);
+        String tone = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TONE);
 
-        float volume = intent.getFloatExtra(AlarmManagerHelper.VOLUME, 0);
-        boolean flash = intent.getBooleanExtra(AlarmManagerHelper.FLASH, false);
-        boolean volume_rising = intent.getBooleanExtra(AlarmManagerHelper.VOLUME_RISING, false);
-        boolean vibrate = intent.getBooleanExtra(AlarmManagerHelper.VIBRATE, false);
+        float volume = intent.getFloatExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VOLUME, 0);
+        boolean flash = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.FLASH, false);
+        boolean volume_rising = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VOLUME_RISING, false);
+        boolean vibrate = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VIBRATE, false);
 
-        String vibratePattern = intent.getStringExtra(AlarmManagerHelper.VIBRATE_PATTERN);
-        String flashPattern = intent.getStringExtra(AlarmManagerHelper.FLASH_PATTERN);
+        String vibratePattern = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VIBRATE_PATTERN);
+        String flashPattern = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.FLASH_PATTERN);
 
-        hardwareManager = new HardwareManager(this);
+        hardwareManager = new com.nizhogor.flashalarm.HardwareManager(this);
 
         TextView tvName = (TextView) findViewById(R.id.alarm_screen_name);
         tvName.setText(name);
@@ -104,24 +104,25 @@ public class AlarmScreen extends Activity {
             hardwareManager.startFlash(flashPattern);
         }
         if (tone != null && !tone.equals("")) {
-            Uri toneUri = Uri.parse(tone);
-            if (toneUri != null) {
-                if (volume_rising)
-                    hardwareManager.PlayRisingAlarm(toneUri);
-                else
-                    hardwareManager.PlayAlarm(toneUri, volume);
-            }
+            if (volume_rising)
+                hardwareManager.PlayRisingAlarm(tone);
+            else
+                hardwareManager.PlayAlarm(tone, volume);
         }
 
-        dismissButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hardwareManager.stopPlaying();
-                hardwareManager.stopVibrate();
-                hardwareManager.stopFlash();
-                finish();
-            }
-        });
+        dismissButton.setOnClickListener(new View.OnClickListener()
+
+                                         {
+                                             @Override
+                                             public void onClick(View view) {
+                                                 hardwareManager.stopPlaying();
+                                                 hardwareManager.stopVibrate();
+                                                 hardwareManager.stopFlash();
+                                                 finish();
+                                             }
+                                         }
+
+        );
     }
 
     @SuppressWarnings("deprecation")

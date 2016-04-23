@@ -1,5 +1,5 @@
- Process: nizhogor.com.flashalarm, PID: 12655
-    java.lang.RuntimeException: Unable to start service nizhogor.com.flashalarm.AlarmService@428b1510 with null: java.lang.NullPointerException
+ Process: com.nizhogor.flashalarm, PID: 12655
+    java.lang.RuntimeException: Unable to start service com.nizhogor.flashalarm.AlarmService@428b1510 with null: java.lang.NullPointerException
             at android.app.ActivityThread.handleServiceArgs(ActivityThread.java:3008)
             at android.app.ActivityThread.access$2200(ActivityThread.java:168)
             at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1403)
@@ -13,16 +13,16 @@
             at dalvik.system.NativeStart.main(Native Method)
      Caused by: java.lang.NullPointerException
             at android.content.Intent.putExtras(Intent.java:6764)
-            at nizhogor.com.flashalarm.AlarmService.onStartCommand(AlarmService.java:21)
+            at com.nizhogor.flashalarm.AlarmService.onStartCommand(AlarmService.java:21)
             at android.app.ActivityThread.handleServiceArgs(ActivityThread.java:2991)
-            at android.app.ActivityThread.access$2200(ActivityThread.java:168)
-            at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1403)
-            at android.os.Handler.dispatchMessage(Handler.java:102)
-            at android.os.Looper.loop(Looper.java:146)
-            at android.app.ActivityThread.main(ActivityThread.java:5678)
-            at java.lang.reflect.Method.invokeNative(Native Method)
-            at java.lang.reflect.Method.invoke(Method.java:515)
-            at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1291)
-            at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1107)
-            at dalvik.system.NativeStart.main(Native Method)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at android.app.ActivityThread.access$2200(ActivityThread.java:168)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1403)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at android.os.Handler.dispatchMessage(Handler.java:102)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at android.os.Looper.loop(Looper.java:146)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at android.app.ActivityThread.main(ActivityThread.java:5678)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at java.lang.reflect.Method.invokeNative(Native Method)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at java.lang.reflect.Method.invoke(Method.java:515)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1291)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1107)
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½at dalvik.system.NativeStart.main(Native Method)
 

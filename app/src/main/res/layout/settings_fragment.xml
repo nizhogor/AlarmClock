@@ -90,7 +90,7 @@
         style="@style/Divider"
         android:layout_marginTop="5dp" />
 
-    <nizhogor.com.flashalarm.CustomToggleButton
+    <com.nizhogor.flashalarm.CustomToggleButton
         android:id="@+id/digital_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

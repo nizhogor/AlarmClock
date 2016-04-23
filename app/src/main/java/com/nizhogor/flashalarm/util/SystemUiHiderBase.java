@@ -1,4 +1,4 @@
-package nizhogor.com.flashalarm.util;
+package com.nizhogor.flashalarm.util;
 
 import android.app.Activity;
 import android.view.View;
