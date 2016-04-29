@@ -27,24 +27,28 @@ public class AlarmManagerHelper extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("Triggered: "+System.currentTimeMillis());
-        setAlarms(context, false);
+        String action = intent.getAction();
+        if (action.equalsIgnoreCase("android.intent.action.BOOT_COMPLETED") ||
+                action.equalsIgnoreCase("android.intent.action.DATE_CHANGED") ||
+                action.equalsIgnoreCase("android.intent.action.TIME_SET")) {
+            setAlarms(context, false);
+        }
     }
 
     public static void setAlarms(Context context, boolean ignoreWeekly) {
         cancelAlarms(context);
 
-        com.nizhogor.flashalarm.AlarmDBHelper dbHelper = new com.nizhogor.flashalarm.AlarmDBHelper(context);
+        AlarmDBHelper dbHelper = new AlarmDBHelper(context);
 
-        List<com.nizhogor.flashalarm.AlarmModel> alarms = dbHelper.getAlarms();
+        List<AlarmModel> alarms = dbHelper.getAlarms();
         if (alarms != null) {
-            for (com.nizhogor.flashalarm.AlarmModel alarm : alarms) {
+            for (AlarmModel alarm : alarms) {
                 if (alarm.isEnabled) {
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, alarm.timeHour);
                     calendar.set(Calendar.MINUTE, alarm.timeMinute);
-                    calendar.set(Calendar.SECOND, 00);
+                    calendar.set(Calendar.SECOND, 0);
 
                     //Find next time to set
                     final int nowDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -81,6 +85,12 @@ public class AlarmManagerHelper extends BroadcastReceiver {
                     if (alarmSet) {
                         PendingIntent pIntent = createPendingIntent(context, alarm, calendar.getTimeInMillis());
                         setAlarm(context, calendar, pIntent);
+                    } else {
+                        // once no days are active for current alarm, disable it
+                        alarm.isEnabled = false;
+                        dbHelper.updateAlarm(alarm);
+                        Intent updateIntent = new Intent("com.nizhogor.action.REFRESH_ALARMS_DISPLAY");
+                        context.sendBroadcast(updateIntent);
                     }
 
                 }
@@ -99,12 +109,12 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     }
 
     public static void cancelAlarms(Context context) {
-        com.nizhogor.flashalarm.AlarmDBHelper dbHelper = new com.nizhogor.flashalarm.AlarmDBHelper(context);
+        AlarmDBHelper dbHelper = new AlarmDBHelper(context);
 
-        List<com.nizhogor.flashalarm.AlarmModel> alarms = dbHelper.getAlarms();
+        List<AlarmModel> alarms = dbHelper.getAlarms();
 
         if (alarms != null) {
-            for (com.nizhogor.flashalarm.AlarmModel alarm : alarms) {
+            for (AlarmModel alarm : alarms) {
                 if (alarm.isEnabled) {
                     PendingIntent pIntent = createPendingIntent(context, alarm, 0);
 
@@ -115,16 +125,16 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         }
     }
 
-    private static PendingIntent createPendingIntent(Context context, com.nizhogor.flashalarm.AlarmModel model, long alarmTimeMillis) {
-        Intent intent = new Intent(context, com.nizhogor.flashalarm.AlarmService.class);
+    private static PendingIntent createPendingIntent(Context context, AlarmModel model, long alarmTimeMillis) {
+        Intent intent = new Intent(context, AlarmService.class);
         intent.putExtra(ID, model.id);
         intent.putExtra(NAME, model.name);
         intent.putExtra(TIME_HOUR, model.timeHour);
         intent.putExtra(TIME_MINUTE, model.timeMinute);
-        intent.putExtra(TONE, model.alarmTone.toString());
+        intent.putExtra(TONE, model.alarmTone);
         intent.putExtra(VIBRATE, model.vibrate);
         intent.putExtra(FLASH, model.flash);
-        intent.putExtra(VOLUME, model.getVolumeFloat());
+        intent.putExtra(VOLUME, model.getVolume());
         intent.putExtra(VOLUME_RISING, model.volume_rising);
         intent.putExtra(FLASH_PATTERN, model.flash_pattern);
         intent.putExtra(VIBRATE_PATTERN, model.vibrate_pattern);
@@ -134,11 +144,11 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         return PendingIntent.getService(context, (int) model.id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static String getTimeUntilAlarm(com.nizhogor.flashalarm.AlarmModel alarm) {
+    public static String getTimeUntilAlarm(AlarmModel alarm) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, alarm.timeHour);
         calendar.set(Calendar.MINUTE, alarm.timeMinute);
-        calendar.set(Calendar.SECOND, 00);
+        calendar.set(Calendar.SECOND, 0);
 
         //Find next time to set
         final int nowDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -174,7 +184,6 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         }
 
         long difference = calendar.getTimeInMillis() - System.currentTimeMillis();
-        long original = difference;
 
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
@@ -187,10 +196,9 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         long inHours = difference / hoursInMilli;
         difference = difference % hoursInMilli;
 
-        long millis = difference;
         long inMinutes = difference / minutesInMilli;
         difference = difference % minutesInMilli;
-        if (0 < difference) { // time can be set when current minute is halfway through
+        if (difference > 0) { // time can be set when current minute is halfway through
             inMinutes++;
         }
         if (inMinutes == 60) {

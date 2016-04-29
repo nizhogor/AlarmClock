@@ -1,7 +1,5 @@
 package com.nizhogor.flashalarm;
 
-import android.net.Uri;
-
 public class AlarmModel {
 
     public static final int SUNDAY = 0;
@@ -27,8 +25,8 @@ public class AlarmModel {
     public int brightness = 0;
     public boolean vibrate;
 
-    public String flash_pattern = "ssle";
-    public String vibrate_pattern = "ssle";
+    public String flash_pattern;
+    public String vibrate_pattern;
     public Boolean dark_theme;
     public boolean digital_picker = true;
     public boolean snooze;
@@ -37,6 +35,10 @@ public class AlarmModel {
 
     public AlarmModel() {
         repeatingDays = new boolean[7];
+        name = "";
+        alarmTone = "";
+        flash_pattern = "smle";
+        vibrate_pattern = "c";
     }
 
     public void setRepeatingDay(int dayOfWeek, boolean value) {
@@ -56,12 +58,12 @@ public class AlarmModel {
         return 1 - log1;
     }
 
-    public static float getVolumeFloat(int currentVolume) {
+    public static float getVolumeScaled(int currentVolume) {
         float log1 = (float) (Math.log(100 - currentVolume) / Math.log(100));
         return 1 - log1;
     }
 
-    public int getVolumeInt() {
+    public int getVolume() {
         return this.volume;
     }
 

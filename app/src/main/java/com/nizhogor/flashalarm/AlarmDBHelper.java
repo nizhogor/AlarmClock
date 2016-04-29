@@ -11,10 +11,6 @@ import com.nizhogor.flashalarm.AlarmContract.Alarm;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Mix on 6/16/2015.
- */
-
 public class AlarmDBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
@@ -61,46 +57,46 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    private com.nizhogor.flashalarm.AlarmModel populateModel(Cursor c) {
-        com.nizhogor.flashalarm.AlarmModel model = new com.nizhogor.flashalarm.AlarmModel();
+    private AlarmModel populateModel(Cursor c) {
+        AlarmModel model = new AlarmModel();
         model.id = c.getLong(c.getColumnIndex(Alarm._ID));
         model.name = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_NAME));
         model.timeHour = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_TIME_HOUR));
         model.timeMinute = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_TIME_MINUTE));
-        model.repeatWeekly = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_REPEAT_WEEKLY)) == 0 ? false : true;
-        model.alarmTone = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_TONE)) != "" ? c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_TONE)) : "";
-        model.isEnabled = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_ENABLED)) == 0 ? false : true;
+        model.repeatWeekly = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_REPEAT_WEEKLY)) != 0;
+        model.alarmTone = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_TONE));
+        model.isEnabled = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_ENABLED)) != 0;
 
         model.brightness = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_BRIGHTNESS));
-        model.flash = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_FLASH)) == 0 ? false : true;
-        model.vibrate = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_VIBRATE)) == 0 ? false : true;
+        model.flash = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_FLASH)) != 0;
+        model.vibrate = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_VIBRATE)) != 0;
         model.setVolume(c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_TONE_VOLUME)));
-        model.volume_rising = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_TONE_VOLUME_RISE)) == 0 ? false : true;
+        model.volume_rising = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_TONE_VOLUME_RISE)) != 0;
 
         model.flash_pattern = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_FLASH_PATTERN));
         model.vibrate_pattern = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_VIBRATE_PATTERN));
-        model.dark_theme = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_DARK_THEME)) == 0 ? false : true;
-        model.digital_picker = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_DIGITAL_PICKER)) == 0 ? false : true;
-        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE)) == 0 ? false : true;
+        model.dark_theme = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_DARK_THEME)) != 0;
+        model.digital_picker = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_DIGITAL_PICKER)) != 0;
+        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE)) != 0;
 
         String[] repeatingDays = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_REPEAT_DAYS)).split(",");
         for (int i = 0; i < repeatingDays.length; ++i) {
-            model.setRepeatingDay(i, repeatingDays[i].equals("false") ? false : true);
+            model.setRepeatingDay(i, !repeatingDays[i].equals("false"));
         }
 
         return model;
     }
 
-    private ContentValues populateContent(com.nizhogor.flashalarm.AlarmModel model) {
+    private ContentValues populateContent(AlarmModel model) {
         ContentValues values = new ContentValues();
         values.put(Alarm.COLUMN_NAME_ALARM_NAME, model.name);
         values.put(Alarm.COLUMN_NAME_ALARM_TIME_HOUR, model.timeHour);
         values.put(Alarm.COLUMN_NAME_ALARM_TIME_MINUTE, model.timeMinute);
         values.put(Alarm.COLUMN_NAME_ALARM_REPEAT_WEEKLY, model.repeatWeekly);
-        values.put(Alarm.COLUMN_NAME_ALARM_TONE, model.alarmTone != null ? model.alarmTone.toString() : "");
+        values.put(Alarm.COLUMN_NAME_ALARM_TONE, model.alarmTone);
         values.put(Alarm.COLUMN_NAME_ALARM_ENABLED, model.isEnabled);
 
-        values.put(Alarm.COLUMN_NAME_TONE_VOLUME, model.getVolumeInt());
+        values.put(Alarm.COLUMN_NAME_TONE_VOLUME, model.getVolume());
         values.put(Alarm.COLUMN_NAME_TONE_VOLUME_RISE, model.volume_rising);
         values.put(Alarm.COLUMN_NAME_ALARM_FLASH, model.flash);
         values.put(Alarm.COLUMN_NAME_ALARM_BRIGHTNESS, model.brightness);
@@ -121,38 +117,43 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
         return values;
     }
 
-    public long createAlarm(com.nizhogor.flashalarm.AlarmModel model) {
+    public long createAlarm(AlarmModel model) {
         ContentValues values = populateContent(model);
         return getWritableDatabase().insert(Alarm.TABLE_NAME, null, values);
     }
 
-    public long updateAlarm(com.nizhogor.flashalarm.AlarmModel model) {
+    public long updateAlarm(AlarmModel model) {
         ContentValues values = populateContent(model);
         return getWritableDatabase().update(Alarm.TABLE_NAME, values, Alarm._ID + " = ?", new String[]{String.valueOf(model.id)});
     }
 
-    public com.nizhogor.flashalarm.AlarmModel getAlarm(long id) {
+    public AlarmModel getAlarm(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String select = "SELECT * FROM " + Alarm.TABLE_NAME + " WHERE " + Alarm._ID + " = " + id;
 
         Cursor c = db.rawQuery(select, null);
 
+
         if (c.moveToNext()) {
-            return populateModel(c);
+            AlarmModel model = populateModel(c);
+            if (!c.isClosed()) {
+                c.close();
+            }
+            return model;
         }
 
         return null;
     }
 
-    public List<com.nizhogor.flashalarm.AlarmModel> getAlarms() {
+    public List<AlarmModel> getAlarms() {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String select = "SELECT * FROM " + Alarm.TABLE_NAME;
 
         Cursor c = db.rawQuery(select, null);
 
-        List<com.nizhogor.flashalarm.AlarmModel> alarmList = new ArrayList<com.nizhogor.flashalarm.AlarmModel>();
+        List<AlarmModel> alarmList = new ArrayList<AlarmModel>();
 
         while (c.moveToNext()) {
             alarmList.add(populateModel(c));

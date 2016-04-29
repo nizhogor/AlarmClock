@@ -20,8 +20,8 @@ public class AlarmService extends Service {
         if (intent != null) {
             long alarmTimestamp = intent.getLongExtra(AlarmManagerHelper.ALARM_TIMESTAMP_MILLIS, -1);
             // if difference is more than 60 sec means that alarm is triggered by moving system time forward
-            long difference = Math.abs(System.currentTimeMillis()-alarmTimestamp);
-            if ( difference < 60 * 1000) {
+            long difference = Math.abs(System.currentTimeMillis() - alarmTimestamp);
+            if (difference < 60 * 1000) {
                 alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 alarmIntent.putExtras(intent);
                 getApplication().startActivity(alarmIntent);

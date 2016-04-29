@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -22,14 +21,14 @@ import java.util.Calendar;
 
 public class AlarmScreen extends Activity {
 
-    public final String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 
     private WakeLock mWakeLock;
     private Camera mCamera;
     private Vibrator mVibrator;
     private float startVolume = (float) 0.1f;
     private static final int WAKELOCK_TIMEOUT = 60 * 1000;
-    private com.nizhogor.flashalarm.HardwareManager hardwareManager;
+    private HardwareManager hardwareManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +38,20 @@ public class AlarmScreen extends Activity {
         this.setContentView(R.layout.activity_alarm_screen);
         Intent intent = getIntent();
 
-        String name = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.NAME);
-        int timeHour = intent.getIntExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TIME_HOUR, 0);
-        int timeMinute = intent.getIntExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TIME_MINUTE, 0);
-        String tone = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.TONE);
+        String name = intent.getStringExtra(AlarmManagerHelper.NAME);
+        int timeHour = intent.getIntExtra(AlarmManagerHelper.TIME_HOUR, 0);
+        int timeMinute = intent.getIntExtra(AlarmManagerHelper.TIME_MINUTE, 0);
+        String tone = intent.getStringExtra(AlarmManagerHelper.TONE);
 
-        float volume = intent.getFloatExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VOLUME, 0);
-        boolean flash = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.FLASH, false);
-        boolean volume_rising = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VOLUME_RISING, false);
-        boolean vibrate = intent.getBooleanExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VIBRATE, false);
+        int volume = intent.getIntExtra(AlarmManagerHelper.VOLUME, 0);
+        boolean flash = intent.getBooleanExtra(AlarmManagerHelper.FLASH, false);
+        boolean volume_rising = intent.getBooleanExtra(AlarmManagerHelper.VOLUME_RISING, false);
+        boolean vibrate = intent.getBooleanExtra(AlarmManagerHelper.VIBRATE, false);
 
-        String vibratePattern = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.VIBRATE_PATTERN);
-        String flashPattern = intent.getStringExtra(com.nizhogor.flashalarm.AlarmManagerHelper.FLASH_PATTERN);
+        String vibratePattern = intent.getStringExtra(AlarmManagerHelper.VIBRATE_PATTERN);
+        String flashPattern = intent.getStringExtra(AlarmManagerHelper.FLASH_PATTERN);
 
-        hardwareManager = new com.nizhogor.flashalarm.HardwareManager(this);
+        hardwareManager = new HardwareManager(this);
 
         TextView tvName = (TextView) findViewById(R.id.alarm_screen_name);
         tvName.setText(name);
@@ -64,18 +63,19 @@ public class AlarmScreen extends Activity {
         TextView alarmDate = (TextView) findViewById(R.id.alarm_screen_date);
         alarmDate.setText(strDate);
 
+        String ampm = "";
         TextView tvTime = (TextView) findViewById(R.id.alarm_screen_time);
-        if (DateFormat.is24HourFormat(this))
-            tvTime.setText(String.format("%02d : %02d", timeHour, timeMinute));
-        else {
-            String ampm = "";
+        TextView period = (TextView) findViewById(R.id.alarm_screen_period);
+        if (!DateFormat.is24HourFormat(this)) {
+            ampm = "am";
             if (timeHour >= 12) {
                 ampm = "pm";
                 if (timeHour > 12)
                     timeHour = timeHour - 12;
             }
-            tvTime.setText(String.format("%02d : %02d %s", timeHour, timeMinute, ampm));
         }
+        tvTime.setText(String.format("%02d : %02d", timeHour, timeMinute));
+        period.setText(ampm);
 
         Button dismissButton = (Button) findViewById(R.id.alarm_screen_button);
 

@@ -15,7 +15,6 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -95,7 +94,6 @@ public class AlarmListAdapter extends BaseAdapter {
 
         Resources resources = mContext.getResources();
         ImageView vibrateIcon = (ImageView) view.findViewById(R.id.vibrate);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) vibrateIcon.getLayoutParams();
 
         if (DateFormat.is24HourFormat(mContext)) {
             txtTime.setText(String.format("%02d : %02d", model.timeHour, model.timeMinute));
@@ -110,8 +108,6 @@ public class AlarmListAdapter extends BaseAdapter {
             txtSaturday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
             txtSunday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter));
 
-            layoutParams.setMargins(resources.getDimensionPixelSize(R.dimen.vibrate_margin), 0, 0, 0);
-            vibrateIcon.setLayoutParams(layoutParams);
         } else {
             view.invalidate();
 
@@ -137,14 +133,11 @@ public class AlarmListAdapter extends BaseAdapter {
             txtFriday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
             txtSaturday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
             txtSunday.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen.active_day_letter_with_period));
-
-            layoutParams.setMargins(resources.getDimensionPixelSize(R.dimen.vibrate_margin_with_period), 0, 0, 0);
-            vibrateIcon.setLayoutParams(layoutParams);
         }
 
         ToggleButton btnToggle = (ToggleButton) view.findViewById(R.id.alarm_item_toggle);
         btnToggle.setChecked(model.isEnabled);
-        btnToggle.setTag(Long.valueOf(model.id));
+        btnToggle.setTag(model.id);
         btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
@@ -153,7 +146,7 @@ public class AlarmListAdapter extends BaseAdapter {
             }
         });
 
-        view.setTag(Long.valueOf(model.id));
+        view.setTag(model.id);
         view.setOnClickListener(new OnClickListener() {
 
             @Override

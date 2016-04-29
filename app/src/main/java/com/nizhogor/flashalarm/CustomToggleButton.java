@@ -22,7 +22,7 @@ public class CustomToggleButton extends FrameLayout {
     public static int buttonId = 1;
     public static int labelId=100;
     */
-    TypedArray a;
+    private TypedArray a;
     private TextView label;
     private CompoundButton button;
     private RelativeLayout mLayout;
@@ -111,7 +111,6 @@ public class CustomToggleButton extends FrameLayout {
 
         try {
             label.setText(a.getText(0));
-            //button.setChecked(a.getBoolean(2, false));
             setChecked(a.getBoolean(2, false));
         } finally {
             a.recycle();
@@ -120,7 +119,7 @@ public class CustomToggleButton extends FrameLayout {
 
     }
 
-    public void setColor() {
+    private void setColor() {
         if (button.isChecked()) {
             label.setTextColor(getResources().getColor(R.color.bpBlue));
             mLayout.setBackgroundColor(getResources().getColor(R.color.black_overlay));

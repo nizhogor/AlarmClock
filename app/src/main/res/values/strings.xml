@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">FlashAlarm</string>
-    <string name="title_activity_alarm_list"></string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_alarm_details">AlarmDetailsActivity</string>
     <string name="details_alarm_name">Alarm Name</string>
@@ -14,7 +13,6 @@
     <string name="details_saturday">Saturday</string>
     <string name="details_alarm_tone">Alarm Tone</string>
     <string name="details_alarm_tone_default">Select an alarm tone</string>
-    <string name="title_activity_alarm_screen">Set alarm</string>
     <string name="volume_rising">Rising volume</string>
     <string name="flash">Flashlight</string>
     <string name="vibrate">Vibrate</string>
@@ -28,11 +26,10 @@
     <string name="pattern_remove_constant">To set custom pattern remove (c)onstant character first.</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="digital_picker">Digital time picker</string>
-    <string name="bug_subject">Alarm bug</string>
     <string name="bug_text">The following issue appeared after I took these steps:</string>
-    <string name="bug_adress">nizhogor@gmail.com</string>
+    <string name="bug_adress">nizhotech@gmail.com</string>
     <string name="bug_toast_body">Please email to</string>
-    <string name="fragment_custom_label">Custom alarm patterns</string>
+    <string name="fragment_custom_label">Enter custom patterns:</string>
     <string name="title_activity_help">HelpActivity</string>
 
     <!--Help texts-->
@@ -67,5 +64,29 @@
       </string>
 
     <string name="play_no_tone">Choose alarm tone to play.</string>
+    <string name="silent">Silent</string>
+    <string name="flashlight_icon">flashlight icon</string>
+    <string name="vibration_indicator">vibration indicator</string>
+    <string name="flashlight_indicator">flashlight indicator</string>
+    <string name="rising_volume_indicator">rising volume indicator</string>
+    <string name="play_button">play button</string>
+    <string name="low_volume_icon">low volume icon</string>
+    <string name="high_volume_icon">high volume icon</string>
+
+    <string name="about">
+    \nCopyright 2016 by Mikhail Rogozhin
+        \n
+        \nThis app used backbone structure of open source project
+        \ngithub.com/steventrigg/AlarmClock by Steven Trigg.
+        \n
+        \nAlso following libraries:
+        \ngithub.com/JakeWharton/ViewPagerIndicatorby Jake Wharton
+        \ngithub.com/code-troopers/android-betterpickers by Derek Brameyer
+        \ngithub.com/amlcurran/ShowcaseView by Alex Curran
+        \nwere used for parts of GUI under Apache 2.0 License.
+        \n
+        \nI appreciate your feedback. For any problems or feature suggestions please reach nizhotech@gmail.com
+    </string>
+    <string name="about_title">FlashAlarm 1.0</string>
 
 </resources>

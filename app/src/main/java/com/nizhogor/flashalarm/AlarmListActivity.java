@@ -1,5 +1,6 @@
 package com.nizhogor.flashalarm;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -37,9 +38,9 @@ public class AlarmListActivity extends ListActivity {
         mContext = this;
         mAdapter = new AlarmListAdapter(this, dbHelper.getAlarms());
         setListAdapter(mAdapter);
-        getActionBar().setTitle("Active alarms");
-        registerReceiver(mMessageReceiver,
-                new IntentFilter("android.intent.action.TIME_SET"));
+        ActionBar actionBar = getActionBar();
+        if (actionBar!=null)
+            actionBar.setTitle("Active alarms");
     }
 
     @Override
@@ -74,12 +75,19 @@ public class AlarmListActivity extends ListActivity {
     }
 
     public void startAlarmDetailsActivity(long id) {
+
         Intent intent = new Intent(this, AlarmDetailsActivity.class);
         intent.putExtra("id", id);
         startActivityForResult(intent, 0);
     }
 
     public void updateAlarmList() {
+        // if android didn't restore adapter
+        if (mAdapter == null) {
+            mContext = this;
+            mAdapter = new AlarmListAdapter(this, dbHelper.getAlarms());
+            setListAdapter(mAdapter);
+        }
         mAdapter.setAlarms(dbHelper.getAlarms());
         mAdapter.notifyDataSetChanged();
     }
@@ -98,9 +106,12 @@ public class AlarmListActivity extends ListActivity {
     public void setAlarmEnabled(long id, boolean isEnabled) {
 
         AlarmModel model = dbHelper.getAlarm(id);
-        model.isEnabled = isEnabled;
-        dbHelper.updateAlarm(model);
-        AlarmManagerHelper.setAlarms(this, true);
+        // when alarm is deleted this is already handled
+        if (model != null) {
+            model.isEnabled = isEnabled;
+            dbHelper.updateAlarm(model);
+            AlarmManagerHelper.setAlarms(this, true);
+        }
     }
 
     public void deleteAlarm(long id) {
@@ -115,13 +126,26 @@ public class AlarmListActivity extends ListActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //Delete alarm from DB by id
                         dbHelper.deleteAlarm(alarmId);
-                        //Refresh the list of the alarms in the adaptor
-                        mAdapter.setAlarms(dbHelper.getAlarms());
-                        //Notify the adapter the data has changed
-                        mAdapter.notifyDataSetChanged();
-                        //Set the alarms
+                        updateAlarmList();
                         AlarmManagerHelper.setAlarms(mContext, false);
                     }
                 }).show();
     }
+
+    @Override
+    protected  void onStart(){
+        super.onStart();
+        System.out.println("--->registered");
+        IntentFilter filter = new IntentFilter("android.intent.action.TIME_SET");
+        filter.addAction("com.nizhogor.action.REFRESH_ALARMS_DISPLAY");
+        registerReceiver(mMessageReceiver, filter);
+    }
+
+    @Override
+    protected  void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(mMessageReceiver);
+    }
+
+
 }

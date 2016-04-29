@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 public class SettingsDialogFragment extends DialogFragment {
     private static AlarmModel alarmDetails;
-    private OnFragmentInteractionListener mListener;
     private TextView mVibratePattern;
     private TextView mFlashPattern;
     private TextView mVibrateLabel;
@@ -76,7 +75,7 @@ public class SettingsDialogFragment extends DialogFragment {
                         mFlashPattern.setText("");
                         mFlashPattern.append("c");
                     }
-                    if (s.length() == 2) {
+                    if (s.length() == 2 && str.charAt(0) == 'c') {
                         showInputInstructionToast(R.string.pattern_remove_constant);
                     }
                 }
@@ -139,6 +138,7 @@ public class SettingsDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         Window window = getDialog().getWindow();
         window.requestFeature(Window.FEATURE_NO_TITLE);
         View v = inflater.inflate(R.layout.settings_fragment, container, false);
@@ -222,36 +222,20 @@ public class SettingsDialogFragment extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
+        super.onDetach();
         alarmDetails.flash_pattern = mFlashPattern.getText().toString();
         alarmDetails.vibrate_pattern = mVibratePattern.getText().toString();
         alarmDetails.digital_picker = mDigitalPicker.isChecked();
-        super.onDetach();
-        mListener = null;
-    }
+        if (mHardwareManager != null) {
+            if (mHardwareManager.isVibrating())
+                mHardwareManager.stopVibrate();
+            if (mHardwareManager.isFlashing())
+                mHardwareManager.stopFlash();
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(AlarmModel alarmModel);
+        }
     }
-
 }

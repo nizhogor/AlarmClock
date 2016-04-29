@@ -18,7 +18,7 @@
     <item
         android:id="@+id/additional_options"
         android:orderInCategory="2"
-        android:title="Addition options"
+        android:title="Additional options"
         app:showAsAction="never" />
     <item
         android:id="@+id/rate"
@@ -31,8 +31,13 @@
         android:title="Report a problem"
         app:showAsAction="never" />
     <item
-        android:id="@+id/help"
+        android:id="@+id/about"
         android:orderInCategory="5"
+        android:title="About"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/help"
+        android:orderInCategory="6"
         android:title="Help"
         app:showAsAction="never" />
 </menu>

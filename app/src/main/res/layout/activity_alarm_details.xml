@@ -3,15 +3,13 @@
     android:id="@+id/root_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/black"
     android:isScrollContainer="true">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
         tools:context=".AlarmDetailsActivity">
-
 
         <RelativeLayout
             android:id="@+id/alarm_time_container"
@@ -47,7 +45,9 @@
             android:ems="10"
             android:focusable="true"
             android:hint="@string/details_alarm_name"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textVisiblePassword"
+            android:longClickable="true"
+            android:maxLength="100" />
 
 
         <View
@@ -205,6 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/play_button"
                     android:paddingBottom="5dp"
                     android:paddingLeft="30dp"
                     android:paddingRight="5dp"
@@ -223,6 +224,7 @@
                     android:id="@+id/left_volume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/low_volume_icon"
                     android:src="@drawable/thumb_down" />
 
                 <SeekBar
@@ -240,6 +242,7 @@
                     android:id="@+id/right_volume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/high_volume_icon"
                     android:src="@drawable/thumb" />
             </LinearLayout>
 
@@ -260,29 +263,28 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/alarm_ringtone_container"
                 android:checked="true"
-                android:text="@string/volume_rising"
-                />
-            </LinearLayout>
+                android:text="@string/volume_rising" />
+        </LinearLayout>
 
-            <com.nizhogor.flashalarm.CustomToggleButton
-                android:id="@+id/alarm_details_vibrate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/hardware_buttons_container"
-                android:checked="true"
-                android:text="@string/vibrate" />
+        <com.nizhogor.flashalarm.CustomToggleButton
+            android:id="@+id/alarm_details_vibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/hardware_buttons_container"
+            android:checked="true"
+            android:text="@string/vibrate" />
 
-            <com.nizhogor.flashalarm.CustomToggleButton
-                android:id="@+id/alarm_details_flash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/alarm_details_vibrate"
-                android:checked="true"
-                android:text="@string/flash" />
+        <com.nizhogor.flashalarm.CustomToggleButton
+            android:id="@+id/alarm_details_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/alarm_details_vibrate"
+            android:checked="true"
+            android:text="@string/flash" />
 
     </RelativeLayout>
 

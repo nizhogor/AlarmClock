@@ -1,9 +1,5 @@
 package com.nizhogor.flashalarm;
 
-/**
- * Created by Mix on 6/16/2015.
- */
-
 import android.provider.BaseColumns;
 
 public final class AlarmContract {

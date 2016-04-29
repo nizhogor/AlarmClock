@@ -1,6 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/alarm_screen_date"
@@ -8,21 +15,47 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="80dp"
+        android:gravity="center|center_vertical"
         android:text="Wednesday, January 1, 2015"
         android:textColor="@color/bpWhite"
-        android:textSize="26dp" />
+        android:textSize="26sp" />
 
-    <TextView
-        android:id="@+id/alarm_screen_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/alarm_screen_date"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
-        android:text="00 : 00"
-        android:textColor="@color/bpWhite"
-        android:textSize="55dp" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/alarm_screen_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:text="00 : 00"
+            android:textColor="@color/bpWhite"
+            android:textSize="55sp" />
+
+
+        <TextView
+            android:id="@+id/alarm_screen_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/alarm_screen_time"
+            android:layout_toRightOf="@+id/alarm_screen_time"
+            android:text="pm"
+            android:textColor="@color/bpWhite"
+            android:textSize="24sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/alarm_screen_name"
@@ -30,20 +63,35 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/alarm_screen_time"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginTop="40dp"
         android:text="Alarm name"
         android:textColor="@color/bpWhite"
-        android:textSize="24dp" />
+        android:textSize="24sp" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/alarm_screen_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="106dp"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/alarm_screen_name"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="18dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/bpBlue"
         android:text="Dismiss"
         android:textColor="@color/bpWhite"
-        android:textSize="62dp" />
+        android:textSize="62sp" />
 
-</RelativeLayout>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>

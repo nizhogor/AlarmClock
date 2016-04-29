@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 class HelpFragmentAdapter extends FragmentPagerAdapter {
 
-    protected static final String[] CONTENT = new String[]{Globals.active_alarms, Globals.alarm_settings, Globals.additional_settings};
+    private static final String[] CONTENT = new String[]{HelpFragment.active_alarms, HelpFragment.alarm_settings, HelpFragment.additional_settings};
 
     private int mCount = CONTENT.length;
 

@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 public final class HelpFragment extends Fragment {
     private static final String KEY_CONTENT = "HelpFragment:Content";
+    public static final String active_alarms = "Active Alarms";
+    public static final String alarm_settings = "Alarm Settings";
+    public static final String additional_settings = "Additional Settings";
 
     public static HelpFragment newInstance(String content) {
         HelpFragment fragment = new HelpFragment();
@@ -38,15 +41,15 @@ public final class HelpFragment extends Fragment {
         int imageId = 0;
 
         switch (mContent) {
-            case Globals.additional_settings:
+            case additional_settings:
                 textId = R.string.settings_help;
                 imageId = R.drawable.settings_help;
                 break;
-            case Globals.active_alarms:
+            case active_alarms:
                 textId = R.string.active_help;
                 imageId = R.drawable.active_help;
                 break;
-            case Globals.alarm_settings:
+            case alarm_settings:
                 textId = R.string.details_help;
                 imageId = R.drawable.details_help;
                 break;

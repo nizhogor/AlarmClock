@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/black_overlay"
@@ -23,28 +24,30 @@
             android:id="@+id/vibrate_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:labelFor="@+id/vibrate_pattern"
             android:text="Vibrate"
             android:textColor="@color/bpWhite"
-            android:textSize="18sp"
-            android:layout_gravity="bottom|right" />
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/vibrate_pattern"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:ems="10"
             android:focusable="true"
-            android:inputType="textVisiblePassword"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp" />
+            android:inputType="textVisiblePassword" />
 
         <ImageView
             android:id="@+id/vibrate_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_vibration_white_24dp"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            android:contentDescription="vibration icon"
+            android:src="@drawable/ic_vibration_white_24dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,31 +60,32 @@
             android:id="@+id/flash_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/bpWhite"
-            android:textSize="18sp"
-            android:text="Flash"
             android:layout_gravity="bottom|right"
-            android:layout_marginLeft="13sp" />
+            android:layout_marginLeft="13sp"
+            android:labelFor="@+id/flash_pattern"
+            android:text="Flash"
+            android:textColor="@color/bpWhite"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/flash_pattern"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:ems="10"
             android:focusable="true"
-            android:inputType="textVisiblePassword"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp" />
+            android:inputType="textVisiblePassword" />
 
         <ImageView
             android:id="@+id/flash_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="bottom"
+            android:layout_marginLeft="10dp"
             android:baselineAlignBottom="true"
-            android:src="@drawable/ic_flash_on_white_24dp"
-            android:layout_marginLeft="10dp" />
+            android:contentDescription="@string/flashlight_icon"
+            android:src="@drawable/ic_flash_on_white_24dp" />
 
     </LinearLayout>
 
