@@ -24,6 +24,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
     public static final String VIBRATE_PATTERN = "vibrate_pattern";
     public static final String FLASH_PATTERN = "flash_pattern";
     public static final String ALARM_TIMESTAMP_MILLIS = "alarm_timestamp_millis";
+    public static final String SNOOZE = "snooze";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,7 +32,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         if (action.equalsIgnoreCase("android.intent.action.BOOT_COMPLETED") ||
                 action.equalsIgnoreCase("android.intent.action.DATE_CHANGED") ||
                 action.equalsIgnoreCase("android.intent.action.TIME_SET")) {
-            setAlarms(context, false);
+            resetAlarms(context, false);
         }
     }
 
@@ -98,6 +99,11 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         }
     }
 
+    public static void resetAlarms(Context context, boolean ignoreWeekly) {
+        cancelAlarms(context);
+        setAlarms(context, ignoreWeekly);
+    }
+
     @SuppressLint("NewApi")
     private static void setAlarm(Context context, Calendar calendar, PendingIntent pIntent) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -138,6 +144,7 @@ public class AlarmManagerHelper extends BroadcastReceiver {
         intent.putExtra(VOLUME_RISING, model.volume_rising);
         intent.putExtra(FLASH_PATTERN, model.flash_pattern);
         intent.putExtra(VIBRATE_PATTERN, model.vibrate_pattern);
+        intent.putExtra(SNOOZE, model.snooze);
         // used to prevent existing alarm being triggered, when time is moved forward
         intent.putExtra(ALARM_TIMESTAMP_MILLIS, alarmTimeMillis);
 
@@ -206,6 +213,10 @@ public class AlarmManagerHelper extends BroadcastReceiver {
             inHours++;
         }
 
+        if (inHours == 24) {
+            inHours = 0;
+            inDays++;
+        }
         String intro = "Alarm is set for ";
         String alert = intro;
         if (inDays > 0) {

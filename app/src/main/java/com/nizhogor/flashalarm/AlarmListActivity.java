@@ -108,6 +108,7 @@ public class AlarmListActivity extends ListActivity {
         AlarmModel model = dbHelper.getAlarm(id);
         // when alarm is deleted this is already handled
         if (model != null) {
+            AlarmManagerHelper.cancelAlarms(this);
             model.isEnabled = isEnabled;
             dbHelper.updateAlarm(model);
             AlarmManagerHelper.setAlarms(this, true);
@@ -124,7 +125,7 @@ public class AlarmListActivity extends ListActivity {
                 .setPositiveButton("Ok", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Delete alarm from DB by id
+                        AlarmManagerHelper.cancelAlarms(mContext);
                         dbHelper.deleteAlarm(alarmId);
                         updateAlarmList();
                         AlarmManagerHelper.setAlarms(mContext, false);

@@ -26,7 +26,7 @@ public class AlarmService extends Service {
                 alarmIntent.putExtras(intent);
                 getApplication().startActivity(alarmIntent);
             }
-            AlarmManagerHelper.setAlarms(this, false);
+            AlarmManagerHelper.resetAlarms(this, false);
 
         } else
             System.out.println("----->Intent is null");

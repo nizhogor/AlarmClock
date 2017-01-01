@@ -33,10 +33,13 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -47,7 +50,7 @@ import com.doomonafireball.betterpickers.timepicker.TimePickerDialogFragment;
 
 import java.util.Calendar;
 
-public class AlarmDetailsActivity extends FragmentActivity implements TimePickerDialogFragment.TimePickerDialogHandler {
+public class AlarmDetailsActivity extends FragmentActivity implements TimePickerDialogFragment.TimePickerDialogHandler, AdapterView.OnItemSelectedListener {
 
     private static final int singleShotSave = 1;
     private static final int singleShotMenu = 2;
@@ -73,6 +76,10 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     private View volumeContainer;
     private SeekBar volumeSeekBar;
     private ImageView playImageView;
+    private Spinner spinnerMinutes;
+    private Spinner spinnerSeconds;
+    private int snoozeMinutes;
+    private int snoozeSeconds;
 
     private AlarmModel alarmDetails = new AlarmModel();
     private AlarmDBHelper dbHelper = new AlarmDBHelper(this);
@@ -125,6 +132,8 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         volumeSeekBar = (SeekBar) findViewById(R.id.volume_bar);
         volumeContainer= findViewById(R.id.volume_container);
         playImageView = (ImageView) findViewById(R.id.play_button);
+        spinnerMinutes = (Spinner) findViewById(R.id.spinner_minutes);
+        spinnerSeconds = (Spinner) findViewById(R.id.spinner_seconds);
 
         setSoftKeyLogic(findViewById(R.id.root_layout));
         Intent intent = getIntent();
@@ -277,6 +286,34 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
             }
         });
 
+        ArrayAdapter<CharSequence> adapterMinutes = ArrayAdapter.createFromResource(this,
+                R.array.minutes, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterMinutes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinnerMinutes.setAdapter(adapterMinutes);
+        spinnerMinutes.setOnItemSelectedListener(this);
+
+        ArrayAdapter<CharSequence> adapterSeconds = ArrayAdapter.createFromResource(this,
+                R.array.seconds, android.R.layout.simple_spinner_item);
+        adapterSeconds.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSeconds.setAdapter(adapterSeconds);
+        spinnerSeconds.setOnItemSelectedListener(this);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        if (parent.getId() == spinnerMinutes.getId()) {
+            snoozeMinutes = Integer.parseInt(((String) parent.getItemAtPosition(pos)));
+        } else if (parent.getId() == spinnerSeconds.getId()) {
+            snoozeSeconds = Integer.parseInt(((String) parent.getItemAtPosition(pos)));
+        } else {
+            System.out.println("Element is not implemented");
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 
     public void hideSoftKeyboard() {
@@ -531,6 +568,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         alarmDetails.flash = chkFlash.isChecked();
         alarmDetails.volume_rising = chkRisingVolume.isChecked();
         alarmDetails.vibrate = chkVibrate.isChecked();
+        alarmDetails.snooze = snoozeMinutes * 60 + snoozeSeconds;
     }
 
     @Override
@@ -561,6 +599,12 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        spinnerSeconds.setSelection((alarmDetails.snooze % 60) / 15);
+        spinnerMinutes.setSelection(alarmDetails.snooze / 60);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -569,7 +613,6 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
 
     @Override
     public void onBackPressed() {
-
         String message;
         updateModelFromLayout();
         if (alarmDetails.alarmTone.isEmpty() && chkRisingVolume.isChecked()) {
@@ -607,7 +650,7 @@ public class AlarmDetailsActivity extends FragmentActivity implements TimePicker
     }
 
     private void saveAlarm() {
-
+        AlarmManagerHelper.cancelAlarms(this);
         if (alarmDetails.id < 0) {
             alarmDetails.id = dbHelper.createAlarm(alarmDetails);
         } else {

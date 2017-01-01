@@ -36,8 +36,9 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
             Alarm.COLUMN_NAME_ALARM_VIBRATE_PATTERN + " STRING," +
             Alarm.COLUMN_NAME_ALARM_DARK_THEME + " BOOLEAN," +
             Alarm.COLUMN_NAME_DIGITAL_PICKER + " BOOLEAN," +
-            Alarm.COLUMN_NAME_SNOOZE + " BOOLEAN" +
+            Alarm.COLUMN_NAME_SNOOZE + " BOOLEAN" + // should be integer, but decided not to update database version from previous release.
             ");";
+
     public static final String COLUMN_NAME_ALARM_ENABLED = "enabled";
     private static final String SQL_DELETE_ALARM =
             "DROP TABLE IF EXISTS " + Alarm.TABLE_NAME;
@@ -77,7 +78,7 @@ public class AlarmDBHelper extends SQLiteOpenHelper {
         model.vibrate_pattern = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_VIBRATE_PATTERN));
         model.dark_theme = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_DARK_THEME)) != 0;
         model.digital_picker = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_DIGITAL_PICKER)) != 0;
-        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE)) != 0;
+        model.snooze = c.getInt(c.getColumnIndex(Alarm.COLUMN_NAME_SNOOZE));
 
         String[] repeatingDays = c.getString(c.getColumnIndex(Alarm.COLUMN_NAME_ALARM_REPEAT_DAYS)).split(",");
         for (int i = 0; i < repeatingDays.length; ++i) {

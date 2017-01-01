@@ -286,6 +286,72 @@
             android:checked="true"
             android:text="@string/flash" />
 
+        <LinearLayout
+            android:id="@+id/snooze_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/alarm_details_flash"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/snoozeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Snooze after"
+                android:textSize="20sp"
+                android:layout_weight="0" />
+
+            <LinearLayout
+                android:id="@+id/placeHolder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="true"
+                android:layout_gravity="center|right">
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner_minutes"
+                    android:nestedScrollingEnabled="true"
+                    android:gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:id="@+id/spinnerTextMinutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="min"
+                    android:textSize="20sp"
+                    android:layout_marginRight="5dp" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner_seconds"
+                    android:nestedScrollingEnabled="true"
+                    android:gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    android:id="@+id/spinnerTextSeconds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="s"
+                    android:textSize="20sp"
+                    android:layout_marginRight="5dp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 

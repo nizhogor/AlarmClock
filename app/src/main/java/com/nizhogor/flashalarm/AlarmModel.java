@@ -29,7 +29,7 @@ public class AlarmModel {
     public String vibrate_pattern;
     public Boolean dark_theme;
     public boolean digital_picker = true;
-    public boolean snooze;
+    public int snooze;
 
     //display colour
 

@@ -92,6 +92,24 @@ public class HardwareManager {
 
     private long getLength(char c) {
         switch (c) {
+            case '1':
+                return 10L;
+            case '2':
+                return 20L;
+            case '3':
+                return 30L;
+            case '4':
+                return 40L;
+            case '5':
+                return 50L;
+            case '6':
+                return 60L;
+            case '7':
+                return 70L;
+            case '8':
+                return 80L;
+            case '9':
+                return 90L;
             case 's':
                 return 500L;
             case 'm':
@@ -130,10 +148,12 @@ public class HardwareManager {
         mIsVibrating = true;
         long[] pattern = getPattern(strPattern);
 
-        if (pattern[1] == -1L) {
-            mVibrator.vibrate(10 * 60 * 1000); // 10 mins by default
-        } else {
-            mVibrator.vibrate(pattern, 0);
+        if (pattern.length != 1) {
+            if (pattern[1] == -1L) {
+                mVibrator.vibrate(10 * 60 * 1000); // 10 mins by default
+            } else {
+                mVibrator.vibrate(pattern, 0);
+            }
         }
     }
 
@@ -153,17 +173,19 @@ public class HardwareManager {
         long[] pattern = getPattern(strPattern);
         mIsFlashing = true;
 
-        if (pattern[1] == -1L) {
-            Camera.Parameters p = mCamera.getParameters();
-            p.setFlashMode(ON);
-            mCamera.setParameters(p);
-            mCamera.startPreview();
-            return;
-        }
-        mTimer = new Timer();
-        FlashTimerTask flashTimerTask = new FlashTimerTask(pattern, 0);
+        if (pattern.length != 1) {
+            if (pattern[1] == -1L) {
+                Camera.Parameters p = mCamera.getParameters();
+                p.setFlashMode(ON);
+                mCamera.setParameters(p);
+                mCamera.startPreview();
+                return;
+            }
+            mTimer = new Timer();
+            FlashTimerTask flashTimerTask = new FlashTimerTask(pattern, 0);
 
-        mTimer.schedule(flashTimerTask, 0);
+            mTimer.schedule(flashTimerTask, 0);
+        }
     }
 
     public void stopFlash() {
@@ -201,10 +223,15 @@ public class HardwareManager {
                 } else {
                     p.setFlashMode(ON);
                 }
-                mCamera.setParameters(p);
-                mCamera.startPreview();
-                //skip first one. First pattern value is used by vibrator only
-                mTimer.schedule(new FlashTimerTask(mFlashPattern, ++mIndex), mFlashPattern[mIndex]);
+                try {
+                    mCamera.reconnect();
+                    mCamera.setParameters(p);
+                    mCamera.startPreview();
+                    //skip first one. First pattern value is used by vibrator only
+                    mTimer.schedule(new FlashTimerTask(mFlashPattern, ++mIndex), mFlashPattern[mIndex]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

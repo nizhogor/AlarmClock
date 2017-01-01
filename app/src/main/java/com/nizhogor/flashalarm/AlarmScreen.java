@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,6 +31,7 @@ public class AlarmScreen extends Activity {
     private float startVolume = (float) 0.1f;
     private static final int WAKELOCK_TIMEOUT = 60 * 1000;
     private HardwareManager hardwareManager;
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class AlarmScreen extends Activity {
         boolean flash = intent.getBooleanExtra(AlarmManagerHelper.FLASH, false);
         boolean volume_rising = intent.getBooleanExtra(AlarmManagerHelper.VOLUME_RISING, false);
         boolean vibrate = intent.getBooleanExtra(AlarmManagerHelper.VIBRATE, false);
+        int snooze = intent.getIntExtra(AlarmManagerHelper.SNOOZE, 0);
 
         String vibratePattern = intent.getStringExtra(AlarmManagerHelper.VIBRATE_PATTERN);
         String flashPattern = intent.getStringExtra(AlarmManagerHelper.FLASH_PATTERN);
@@ -115,14 +119,31 @@ public class AlarmScreen extends Activity {
                                          {
                                              @Override
                                              public void onClick(View view) {
-                                                 hardwareManager.stopPlaying();
-                                                 hardwareManager.stopVibrate();
-                                                 hardwareManager.stopFlash();
-                                                 finish();
+                                                 stopAlarm();
                                              }
                                          }
-
         );
+
+        if (snooze != 0) {
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    stopAlarm();
+                }
+            };
+            mTimer = new Timer();
+            mTimer.schedule(task, snooze * 1000);
+        }
+    }
+
+    void stopAlarm() {
+        System.out.println("STOPPING");
+        hardwareManager.stopPlaying();
+        hardwareManager.stopVibrate();
+        hardwareManager.stopFlash();
+        if (mTimer != null)
+            mTimer.cancel();
+        finish();
     }
 
     @SuppressWarnings("deprecation")
@@ -146,13 +167,11 @@ public class AlarmScreen extends Activity {
             mWakeLock.acquire();
             Log.i(TAG, "Wakelock aquired!!");
         }
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
 
         if (mWakeLock != null && mWakeLock.isHeld()) {
             mWakeLock.release();
